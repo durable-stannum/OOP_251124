@@ -7,6 +7,7 @@
 #include "Interface.h"
 #include "ATM.h"
 #include "Account.h"
+#include "CashDenominations.h"
 #include <limits>
 
 using namespace std;
@@ -72,26 +73,15 @@ Initializer::Initializer(ifstream& fin, Interface& uiInput) : ui(uiInput) {
         getline(fin, languageMode);
         getline(fin, initialFund);
 
-        int c50k, c10k, c5k, c1k;
-        {
-            stringstream ss(initialFund);
-            ss >> c50k >> c10k >> c5k >> c1k;
-        }
-
+        // initialFund를 권종별 장수로 분리
+        CashDenominations cash;
+        stringstream ss(initialFund);
+        ss >> cash.c50k >> cash.c10k >> cash.c5k >> cash.c1k;
         if (allBanks.find(primaryBankStr) != allBanks.end()) {
-            ATM* pATM = new ATM(
-                allBanks[primaryBankStr],
-                serial,
-                type,
-                languageMode,
-                c50k, c10k, c5k, c1k,
-                this,
-                ui
-            );
+            ATM* pATM = new ATM(allBanks[primaryBankStr], serial, type, languageMode, cash, this, ui);
             allATMs.push_back(pATM);
         }
     }
-
     cout << "Initialization Completed (초기화 완료)" << endl;
 }
 
