@@ -30,33 +30,48 @@ void ATM::run() {
 		string cardNumberInput = ui.inputString(""); 
 
         // Back 입력 시 종료 로직 등이 필요하면 여기에 추가
-		
-		ui.displayMessage("SessionStart");
-		
-        // Session 생성 (Initializer 연동)
-		Session* session = new Session(
-            pInit->findBankByCardNumber(cardNumberInput), 
-            pInit->findAccountPtrByCardNumber(cardNumberInput), 
-            ui, this, pInit->getAllBanks()
-        );
 
 		// 관리자 확인
 		if (isAdmin(cardNumberInput)) { 
 			handleAdminSession();
-            delete session; // 관리자 세션 후 메모리 해제
 			continue;
 		}
-        // 유저 카드 유효성 확인
-		else if (!handleUserSession(cardNumberInput)) { 
-            delete session; // 실패 시 해제
-            continue; 
+		
+		//카드 존재 유무 확인 및 유효성 검사
+		Bank* cardHoldingBank = pInit->findBankByCardNumber(cardNumberInput);
+        Account* pAccount = pInit->findAccountPtrByCardNumber(cardNumberInput);
+		
+		if (pAccount == nullptr) {
+			ui.displayMessage("CheckValidity");
+			ui.displayMessage("IsNotValid");
+			ui.displayMessage("SessionEnd");
+			continue;
+		}
+
+
+// 3. ATM 유형에 따른 사용 가능 여부 검사 (Single/Multi)
+        if (!handleUserSession(cardNumberInput, cardHoldingBank)) {
+            continue;
         }
+        
 
-		// 세션 실행
-		session->run();
+        // 4. ⭐️ 검증 완료 후 Session 생성
+        ui.displayMessage("SessionStart");
 
-		delete session;
-		ui.displayMessage("GoBackToEnteringCardNumber");
+        Session* session = new Session(
+            cardHoldingBank, 
+            pAccount, 
+            ui, 
+            this, 
+            pInit->getAllBanks()
+        );
+
+        // 5. 세션 실행 (비밀번호 입력 파트로 진입)
+        session->run();
+
+        // 6. 세션 종료 및 정리
+        delete session;
+        ui.displayMessage("GoBackToEnteringCardNumber");
 	}
 }
 
@@ -148,10 +163,10 @@ bool ATM::writeHistoryToFile(const string& historyContent) const {
 	return false;
 }
 
-bool ATM::handleUserSession(const string& cardNumberInput) {
+bool ATM::handleUserSession(const string& cardNumberInput, Bank* cardHoldingBank) {
 	ui.displayMessage("CheckValidity");
 	if (isSingle()) { 
-		if (!isValid(cardNumberInput)) { // 타행 카드 거절
+		if (!isValid(cardNumberInput, cardHoldingBank)) { // 타행 카드 거절
 			ui.displayMessage("IsNotValid");
 			ui.displayMessage("SessionEnd");
 			ui.displayMessage("GoBackToEnteringCardNumber");
@@ -166,10 +181,13 @@ bool ATM::isSingle() const {
 	return this->getType() == "Single";
 }
 
-bool ATM::isValid(const string& cardNumberInput) {
+bool ATM::isValid(const string& cardNumberInput, Bank* cardBank) const {
     // Initializer를 통해 카드 번호로 은행을 찾아서 주거래 은행과 비교
-    Bank* cardBank = pInit->findBankByCardNumber(cardNumberInput);
-	return cardBank == pPrimaryBank;
+	if (isSingle()) {
+		return cardBank == pPrimaryBank;
+	}
+ 
+	return true;
 }
 
 void ATM::addCashToATM(const CashDenominations& deposit) {
