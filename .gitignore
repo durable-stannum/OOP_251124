@@ -1,0 +1,12 @@
+# 실행 파일 및 빌드 부산물 무시
+*.exe
+*.o
+*.obj
+*.dll
+
+# VS Code 설정 폴더 무시 (선택사항이지만 추천)
+.vscode/
+
+# OS 생성 파일 무시
+.DS_Store
+Thumbs.db

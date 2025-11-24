@@ -1,0 +1,7 @@
+[ ATM Information (ATM 정보) ]
+Primary Bank (주거래은행): Daegu
+ATM Serial (ATM 고유번호): 000222
+Type (유형): Multi
+Language (언어): Bilingual
+========================================
+[ Transaction History (거래 내역) ]

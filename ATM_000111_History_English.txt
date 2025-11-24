@@ -1,0 +1,7 @@
+[ ATM Information (ATM 정보) ]
+Primary Bank (주거래은행): Kakao
+ATM Serial (ATM 고유번호): 000111
+Type (유형): Single
+Language (언어): Unilingual
+========================================
+[ Transaction History (거래 내역) ]
