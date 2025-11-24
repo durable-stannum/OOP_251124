@@ -63,7 +63,7 @@ bool WithdrawalTransaction::processSingleWithdrawal() {
     // (앞서 검사했지만, 동시성 이슈 등이 없으므로 안전)
     if (account->deductFunds(totalDeduction)) {
         // 로그 기록
-        string summaryLog = "[TxID: " + to_string(transactionID) + "] " +
+        string summaryLog = "[TransactionID: " + to_string(transactionID) + "] " +
                             to_string(amount) + "KRW Withdrawn (Fee: " + to_string(fee) + ")";
         pSession->recordTransaction(summaryLog);
         
