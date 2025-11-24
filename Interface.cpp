@@ -5,6 +5,7 @@
 #include "main.h"
 #include "ATM.h"
 #include "Initializer.h"
+#include <limits>
 using namespace std;
 
 Interface::Interface() { addMessages(); } // 생성자
@@ -427,13 +428,21 @@ string Interface::inputString(string msgKey) {
     while (true) {
         if (!msgKey.empty()) displayMessage(msgKey);
         cin >> input;
-
-        if (input == "/") {
-            if (globalInitializer != nullptr) globalInitializer->printSnapshot();
-            continue; 
-        }
-        return input;
+        // ⭐️ 1. 이전 버퍼 잔여물(selectLanguage 등) 제거
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        
+             // 3. 스냅샷 체크
+            if (input == "/") {
+                if (globalInitializer != nullptr) globalInitializer->printSnapshot();
+                continue; 
+            }
+            
+            // 빈 문자열이 아닌 경우 (유효성 검사는 ATM에서 처리)
+            if (!input.empty()) {
+                return input;
+            }
     }
+	
 }
 
 void Interface::totalCheckInfo(int amount, int count) {
