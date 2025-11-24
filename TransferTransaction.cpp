@@ -72,7 +72,7 @@ void TransferTransaction::processCashTransfer(long fee, Account* destAccount) {
     // [REQ 6.7] 상대방 계좌 잔액 증가
     if (destAccount->addFunds(transferAmount)) {
         // 로그 기록
-        string summary = "[TxID: " + to_string(transactionID) + "] Cash Transfer " +
+        string summary = "[TransactionID: " + to_string(transactionID) + "] Cash Transfer " +
                          to_string(transferAmount) + "KRW to " + destAccount->getAccountNumber() + 
                          " (Fee: " + to_string(fee) + ")";
         pSession->recordTransaction(summary);
