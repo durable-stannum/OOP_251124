@@ -6,15 +6,14 @@
 #include "main.h" // 전역 language 변수 사용
 #include "Initializer.h"
 #include "Session.h"
+#include "CashDenominations.h"
 
 using namespace std;
 
-ATM::ATM(Bank* primaryBank, const string& serial, const string& t, const string& lang, 
-         int cash50k, int cash10k, int cash5k, int cash1k, 
-         Initializer* initializer, Interface& uiInput)
-	: pPrimaryBank(primaryBank), serialNumber(serial), type(t), languageMode(lang), 
-      availableCash{cash50k, cash10k, cash5k, cash1k}, 
-      atmTransactionHistory(""), pInit(initializer), ui(uiInput) {}
+ATM::ATM(Bank* primaryBank, const string& serial, const string& t, const string& lang, CashDenominations& initialCash, Initializer* initializer, Interface& uiInput)
+	: pPrimaryBank(primaryBank), serialNumber(serial), type(t), languageMode(lang), availableCash(initialCash), adminCardNumber("0000-0000-0000"), atmTransactionHistory(""), pInit(initializer), ui(uiInput) {
+	atmTransactionHistory = "";
+}
 
 void ATM::run() {
 	ui.addATMWelcome(this);
