@@ -55,7 +55,7 @@ void DepositTransaction::processCashDeposit(long fee) {
     // [REQ 4.3] 계좌 잔액 증가
     if (account->addFunds(depositAmount)) {
         // 로그 기록
-        string summaryLog = "[TxID: " + to_string(transactionID) + "] " + 
+        string summaryLog = "[TransactionID: " + to_string(transactionID) + "] " + 
                             to_string(depositAmount) + "KRW Deposited (Fee: " + to_string(fee) + ")";
         pSession->recordTransaction(summaryLog); 
         
