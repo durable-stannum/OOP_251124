@@ -5,29 +5,11 @@
 #include <algorithm>
 #include "Bank.h"
 #include "Interface.h"
+#include "CashDenominations.h"
 
 using namespace std;
 
 class Initializer; // 전방 선언
-#ifndef ATM_H
-#define ATM_H
-
-#include <string>
-#include <algorithm>
-#include "Bank.h"
-#include "Interface.h"
-
-using namespace std;
-
-class Initializer; // 전방 선언
-
-// 돈 구조체
-struct CashDenominations {
-    int c50k = 0;
-    int c10k = 0;
-    int c5k = 0;
-    int c1k = 0;
-};
 
 class ATM {
 private:    
@@ -35,19 +17,14 @@ private:
     string serialNumber;
     string type;
     string languageMode;
-
     CashDenominations availableCash;
-
     const string adminCardNumber = "0000-0000-0000"; // [수정] 상수화 권장
     string atmTransactionHistory;
-    
     Initializer* pInit;
     Interface& ui;
 
 public:
-    ATM(Bank* primaryBank, const string& serial, const string& t, const string& lang, 
-        int cash50k, int cash10k, int cash5k, int cash1k, 
-        Initializer* initializer, Interface& uiInput);
+    ATM(Bank* primaryBank, const string& serial, const string& t, const string& lang, CashDenominations& initialCash, Initializer* initializer, Interface& uiInput);
 
     void run();
 
