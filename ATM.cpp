@@ -11,7 +11,7 @@
 using namespace std;
 
 ATM::ATM(Bank* primaryBank, const string& serial, const string& t, const string& lang, CashDenominations& initialCash, Initializer* initializer, Interface& uiInput)
-	: pPrimaryBank(primaryBank), serialNumber(serial), type(t), languageMode(lang), availableCash(initialCash), adminCardNumber("0000-0000-0000"), atmTransactionHistory(""), pInit(initializer), ui(uiInput) {
+	: pPrimaryBank(primaryBank), serialNumber(serial), type(t), languageMode(lang), availableCash(initialCash), atmTransactionHistory(""), pInit(initializer), ui(uiInput) {
 	atmTransactionHistory = "";
 }
 
@@ -97,7 +97,12 @@ void ATM::setLanguage() {
 }
 
 bool ATM::isAdmin(const string& cardNumberInput) {
-	return cardNumberInput == adminCardNumber;
+    // "admin" + [주거래은행이름]
+    // 혹은 Initializer에서 은행별 관리자 번호를 따로 관리해도 되지만, 
+    // 간단하게 규칙성 있는 번호로 구현하는 것을 추천합니다.
+    string targetAdminNum = "admin" + pPrimaryBank->getPrimaryBank(); 
+    
+    return cardNumberInput == targetAdminNum;
 }
 
 // [추가] 거래 내역 기록
