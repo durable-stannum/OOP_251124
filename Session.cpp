@@ -86,8 +86,7 @@ void Session::run() {
             transfer->run();
             break;
         default:
-            // ui.displayErrorMessage("InvalidSelection");
-            cout << "Invalid selection." << endl;
+            ui.displayErrorMessage("InvalidSelection");
             break;
         }
     }
