@@ -170,18 +170,28 @@ void Interface::addMessages() {
 	msgMap["NoCashInserted"]["English"] = "Cash is not inserted.\n";
 	msgMap["NoCashInserted"]["Korean"] = "현금이 삽입되지 않았습니다.\n";
 
-	msgMap["CheckInsertionRule"]["English"] = "수표 입력 조건 ~~(Eng.ver)\n";
-	msgMap["CheckInsertionRule"]["Korean"] = "수표 입력 조건 ~~\n";
+	msgMap["CheckInsertionRule"]["English"] =
+        "=================[ Check Deposit Rules ]=================\n"
+        "- Minimum check amount: 100,000 KRW\n"
+        "- Maximum checks per transaction: 30\n"
+        "- Transaction fee must be paid in cash (1,000 KRW bills)\n"
+        "=========================================================\n";
+    msgMap["CheckInsertionRule"]["Korean"] =
+        "=================[ 수표 입금 안내 ]=================\n"
+        "- 수표 최소 금액: 100,000원\n"
+        "- 1회 최대 입금 장수: 30장\n"
+        "- 수수료는 반드시 현금(1,000원권)으로 투입해야 합니다.\n"
+        "====================================================\n";
 	
-	msgMap["EnterCheckAmount"]["English"] =
-		"수표 금액 입력. 그만 입력하려면 0 입력.(Eng.ver)\n"
-		"> ";
-	msgMap["EnterCheckAmount"]["Korean"] = 
-		"수표 금액 입력. 그만 입력하려면 0 입력\n"
-		"> ";
+    msgMap["EnterCheckAmount"]["English"] =
+        "Enter the check amount. (Enter 0 to finish insertion)\n"
+        "> ";
+    msgMap["EnterCheckAmount"]["Korean"] =
+        "수표 금액을 입력해 주세요. (입력을 종료하려면 0을 입력하세요)\n"
+        "> ";
 
-	msgMap["InvalidCheckAmount"]["English"] = "수표 금액 이상함요;;(Eng.ver)\n";
-	msgMap["InvalidCheckAmount"]["Korean"] = "수표 금액 이상함요;;\n";
+	msgMap["InvalidCheckAmount"]["English"] = "Invalid check amount. Minimum is 100,000 KRW.\n";
+	msgMap["InvalidCheckAmount"]["Korean"] = "유효하지 않은 수표 금액입니다. 10만원 이상만 가능합니다.\n";
 
 	msgMap["EnterCheckAmount"]["English"] =
 		"수표 장수 입력(Eng.ver)\n"
@@ -190,14 +200,14 @@ void Interface::addMessages() {
 		"수표 장수 입력\n"
 		"> ";
 
-	msgMap["NoCheckInputExit"]["English"] = "수표 입력 안 됨(Eng.ver)\n";
-	msgMap["NoCheckInputExit"]["Korean"] = "수표 입력 안 됨\n";
+	msgMap["NoCheckInputExit"]["English"] = "No checks entered. Transaction cancelled.\n";
+	msgMap["NoCheckInputExit"]["Korean"] = "입력된 수표가 없습니다. 거래를 취소합니다.\n";
 
-	msgMap["ExceedCheckLimit"]["English"] = "수표 장수 너무 많이 입력됨(Eng.ver)\n";
-	msgMap["ExceedCheckLimit"]["Korean"] = "수표 장수 너무 많이 입력됨\n";
+	msgMap["ExceedCheckLimit"]["English"] = "Check limit exceeded (Max 30).\n";
+	msgMap["ExceedCheckLimit"]["Korean"] = "수표 입금 한도(30장)를 초과했습니다.\n";
 
-	msgMap["CheckInsertionConfirm"]["English"] = "수표 입력 완료!(Eng.ver)\n";
-	msgMap["CheckInsertionConfirm"]["Korean"] = "수표 입력 완료!\n";
+	msgMap["CheckInsertionConfirm"]["English"] = "Checks inserted successfully.\n";
+	msgMap["CheckInsertionConfirm"]["Korean"] = "수표 투입이 완료되었습니다.\n";
 	
 
 	msgMap["WonUnit"]["English"] = " KRW";
