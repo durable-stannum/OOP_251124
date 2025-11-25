@@ -18,7 +18,6 @@ private:
     string type;
     string languageMode;
     CashDenominations availableCash;
-    const string adminCardNumber = "0000-0000-0000"; // [수정] 상수화 권장
     string atmTransactionHistory;
     Initializer* pInit;
     Interface& ui;
