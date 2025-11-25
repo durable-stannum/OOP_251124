@@ -98,7 +98,8 @@ void Interface::addMessages() {
 		"------------------------------------------------------------------------------------------------------\n"
 		"1. Deposit\n"
 		"2. Withdrawal\n"
-		"3. Transition\n"
+		"3. Transfer\n"
+		"4. Quit\n"
 		"Enter the transaction number.\n"
 		"> ";
 	msgMap["SessionMenu"]["Korean"] = 
@@ -108,6 +109,7 @@ void Interface::addMessages() {
 		"1. 입금\n"
 		"2. 출금\n"
 		"3. 이체\n"
+		"4. 종료\n"
 		"거래 번호를 입력하세요.\n"
 		"> ";
 
