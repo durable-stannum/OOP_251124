@@ -114,8 +114,8 @@ void Interface::addMessages() {
 		"거래 번호를 입력하세요 (종료하려면 0 입력).\n"
 		"> ";
 
-	msgMap["InvalidSelection"]["English"] = "Invalid transaction number. Session ended.";
-	msgMap["InvalidSelection"]["Korean"] = "유효하지 않은 거래 번호입니다. 세션이 종료됩니다.";
+	msgMap["InvalidSelection"]["English"] = "Invalid transaction number. Session ended.\n";
+	msgMap["InvalidSelection"]["Korean"] = "유효하지 않은 거래 번호입니다. 세션이 종료됩니다.\n";
 
 	msgMap["SessionEnd"]["English"] = "Session is ended.\n";
 	msgMap["SessionEnd"]["Korean"] = "세션이 종료되었습니다.\n";
