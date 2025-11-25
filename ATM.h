@@ -12,7 +12,8 @@ using namespace std;
 class Initializer; // 전방 선언
 
 class ATM {
-private:    
+private:
+    int totalSessionCount = 0;
     Bank* pPrimaryBank;
     string serialNumber;
     string type;
