@@ -26,7 +26,8 @@ void ATM::run() {
         // [수정] cin -> ui.inputString (스냅샷 REQ 10.1 대응)
 		// "카드를 입력하세요" 메세지는 inputString 내부 혹은 displayMessage로 처리
         ui.displayMessage("EnterCardNumber");
-		string cardNumberInput = ui.inputString(""); 
+		string cardNumberInput = ui.inputString("");
+		totalSessionCount++; 
 		if (cardNumberInput == "Back" || cardNumberInput == "이전") {
 		ui.displayMessage("DeactivateATM");
 		language = "Unselected";
@@ -127,6 +128,11 @@ void ATM::handleAdminSession() {
 	switch (choice) {
 	case 1: // 내역 출력 및 저장
 		cout << "========== Transaction History ==========" << endl;
+
+        cout << "[Summary]" << endl;
+        cout << "Total Sessions: " << totalSessionCount << endl; // 총 세션 수 출력
+        cout << "-----------------------------------------" << endl;
+		
         if (atmTransactionHistory.empty()) {
             cout << "No transactions yet." << endl;
         } else {
@@ -163,6 +169,7 @@ bool ATM::writeHistoryToFile(const string& historyContent) const {
 		outFile << "Serial: " << serialNumber << endl;
 		outFile << "Type: " << type << endl;
 		outFile << "Language: " << languageMode << endl;
+		outFile << "Total Sessions: " << totalSessionCount << endl;
 		outFile << "========================================" << endl;
 		outFile << "[ Transaction History ]" << endl;
 		outFile << historyContent << endl;
