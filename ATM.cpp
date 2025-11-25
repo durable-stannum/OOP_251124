@@ -29,7 +29,8 @@ void ATM::run() {
 		string cardNumberInput = ui.inputString(""); 
 		if (cardNumberInput == "Back" || cardNumberInput == "이전") {
 		ui.displayMessage("DeactivateATM");
-		break;
+		language = "Unselected";
+		return;
 		}
 
         // Back 입력 시 종료 로직 등이 필요하면 여기에 추가
@@ -124,8 +125,6 @@ void ATM::handleAdminSession() {
 	int choice = ui.inputInt(""); 
 
 	switch (choice) {
-	case 0: // [추가] 0 입력 시 종료 처리
-        ui.displayMessage("GoBackToEnteringCardNumber");
 	case 1: // 내역 출력 및 저장
 		cout << "========== Transaction History ==========" << endl;
         if (atmTransactionHistory.empty()) {
