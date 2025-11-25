@@ -66,6 +66,8 @@ bool WithdrawalTransaction::processSingleWithdrawal() {
         string summaryLog = "[TransactionID: " + to_string(transactionID) + "] " +
                             to_string(amount) + "KRW Withdrawn (Fee: " + to_string(fee) + ")";
         pSession->recordTransaction(summaryLog);
+        // 세션 요약 기록
+        pSession->recordSessionSummary(pSession->getAccount()->getAccountNumber(), pSession->getAccount()->getCardNumber(), "Withdrawal", amount);
         
         ui.displayMessage("WithdrawalSuccess");
         
