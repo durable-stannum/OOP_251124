@@ -127,9 +127,12 @@ void TransferTransaction::processAccountTransfer(long fee, Account* destAccount)
         destAccount->addFunds(amount);
 
         // 로그 기록
+        // (수정된 코드) sourceAccount->getAccountNumber()를 사용하여 보낸 계좌 추가
         string summary = "[TransactionID: " + to_string(transactionID) + "] Account Transfer " +
-                         to_string(amount) + "KRW to " + destAccount->getAccountNumber() + 
-                         " (Fee: " + to_string(fee) + ")";
+                 to_string(amount) + "KRW from " + 
+                 sourceAccount->getAccountNumber() + // [추가된 부분]
+                 " to " + destAccount->getAccountNumber() + 
+                 " (Fee: " + to_string(fee) + ")";
         pSession->recordTransaction(summary);
 
         ui.displayMessage("TransferSuccess");
