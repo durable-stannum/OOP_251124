@@ -28,6 +28,8 @@ private:
     Transaction* deposit;
     Transaction* withdrawal;
     Transaction* transfer;
+    static int sessionCount;
+    string sessionSummary;
 
 public:
     // 생성자
@@ -50,6 +52,8 @@ public:
 
     // [추가] 거래 내역 기록 (ATM에도 전달)
     void recordTransaction(const string& log);
+    // 세션 요약 기록
+    void recordSessionSummary(string accountNumberInput, string cardNumberInput, string transactionTypeInput, int amountInput);
 };
 
 #endif
