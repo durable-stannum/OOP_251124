@@ -40,6 +40,9 @@ void Interface::addMessages() {
 		"\n카드를 슬롯에 삽입하고 카드 번호('-' 포함)를 입력하세요. (나가려면 '이전'을 입력하세요.)\n"
 		"> ";
 
+	msgMap["DeactivateATM"]["English"] = "Deactivate this ATM.\n";
+	msgMap["DeactivateATM"]["Korean"] = "이 ATM을 비활성화합니다.\n";
+
 	msgMap["CheckValidity"]["English"] = "Checking card validity... ";
 	msgMap["CheckValidity"]["Korean"] = "카드 유효성 확인 중... ";
 
