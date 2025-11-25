@@ -78,6 +78,8 @@ void TransferTransaction::processCashTransfer(long fee, Account* destAccount) {
                  " to " + destAccount->getAccountNumber() + 
                  " (Fee: " + to_string(fee) + ")";
         pSession->recordTransaction(summary);
+        // 세션 요약 기록
+        pSession->recordSessionSummary(pSession->getAccount()->getAccountNumber(), pSession->getAccount()->getCardNumber(), "Cash Transfer", transferAmount);
         
         ui.displayMessage("TransferSuccess");
         
@@ -134,6 +136,8 @@ void TransferTransaction::processAccountTransfer(long fee, Account* destAccount)
                  " to " + destAccount->getAccountNumber() + 
                  " (Fee: " + to_string(fee) + ")";
         pSession->recordTransaction(summary);
+        // 세션 요약 기록
+        pSession->recordSessionSummary(pSession->getAccount()->getAccountNumber(), pSession->getAccount()->getCardNumber(), "Account Transfer", amount);
 
         ui.displayMessage("TransferSuccess");
         
@@ -171,8 +175,7 @@ void TransferTransaction::run() {
         }
         
         if (choice != 1 && choice != 2) { 
-            // ui.displayErrorMessage("InvalidSelection"); 
-            cout << "Invalid selection." << endl;
+            ui.displayErrorMessage("InvalidSelection"); 
             continue; 
         }
 
