@@ -58,6 +58,8 @@ void DepositTransaction::processCashDeposit(long fee) {
         string summaryLog = "[TransactionID: " + to_string(transactionID) + "] " + 
                             to_string(depositAmount) + "KRW Deposited (Fee: " + to_string(fee) + ")";
         pSession->recordTransaction(summaryLog); 
+        // 세션 요약 기록
+        pSession->recordSessionSummary(pSession->getAccount()->getAccountNumber(), pSession->getAccount()->getCardNumber(), "Cash Deposit", depositAmount);
         
         ui.displayMessage("DepositSuccess");
         
@@ -102,8 +104,7 @@ void DepositTransaction::processCheckDeposit(long fee) {
         
         int count = ui.inputInt("PromptCheckCount");
         if (count <= 0) { 
-            // ui.displayErrorMessage("InvalidInput_Negative"); 
-            cout << "Invalid count." << endl;
+            ui.displayErrorMessage("InvalidInput_Negative");
             continue; 
         }
         
@@ -181,8 +182,7 @@ void DepositTransaction::run() {
     }
     
     if (depositType != 1 && depositType != 2) {
-        // ui.displayErrorMessage("InvalidSelection");
-        cout << "Invalid selection." << endl;
+        ui.displayErrorMessage("InvalidSelection");
         return;
     }
 
