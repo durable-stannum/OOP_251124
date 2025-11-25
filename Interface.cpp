@@ -29,7 +29,7 @@ void Interface::addMessages() {
 		"Enter ATM's serial number. (ATM의 고유번호를 입력하세요.)\n"
 		"> ";
 	msgMap["ChooseLanguage"]["Unselected"] = 
-		"Choose one language. [English/Korean] (언어를 선택하세요. [영어/한국어])\n"
+		"Press 1 or 2 to choose one language. [1. English/2. Korean] (언어를 선택하기 위해 1 또는 2를 누르세요. (1. 영어/2. 한국어])\n"
 		"> ";
 
 	// ATM의 언어가 정해진 후
@@ -102,8 +102,7 @@ void Interface::addMessages() {
 		"1. Deposit\n"
 		"2. Withdrawal\n"
 		"3. Transfer\n"
-		"4. Quit\n"
-		"Enter the transaction number.\n"
+		"Enter the transaction number (Enter 0 to quit).\n"
 		"> ";
 	msgMap["SessionMenu"]["Korean"] = 
 		"======================================================================================================\n"
@@ -112,8 +111,7 @@ void Interface::addMessages() {
 		"1. 입금\n"
 		"2. 출금\n"
 		"3. 이체\n"
-		"4. 종료\n"
-		"거래 번호를 입력하세요.\n"
+		"거래 번호를 입력하세요 (종료하려면 0 입력).\n"
 		"> ";
 
 	msgMap["SessionEnd"]["English"] = "Session is ended.\n";
@@ -125,12 +123,12 @@ void Interface::addMessages() {
 	msgMap["AskDepositType"]["English"] =
 		"1. Cash Deposit\n"
 		"2. Check Deposit\n"
-		"Enter deposit type number.\n"
+		"Enter deposit type number (Enter 0 to quit).\n"
 		"> ";
 	msgMap["AskDepositType"]["Korean"] = 
 		"1. 현금 입금\n"
 		"2. 수표 입금\n"
-		"입금 종류 번호를 입력하세요.\n"
+		"입금 종류 번호를 입력하세요 (종료하려면 0 입력).\n"
 		"> ";
 
 	msgMap["Input50kCount"]["English"] =
@@ -291,8 +289,8 @@ void Interface::addMessages() {
 	msgMap["TransactionFailed"]["Korean"] = "거래 실패.\n";
 
 
-	msgMap["TransferOptionMenu"]["English"] = "1. Cash Transfer\n2. Account Transfer\n> ";
-	msgMap["TransferOptionMenu"]["Korean"] = "1. 현금 송금\n2. 계좌 이체\n> ";
+	msgMap["TransferOptionMenu"]["English"] = "1. Cash Transfer\n2. Account Transfer\nSelect option (Enter 0 to quit).\n> ";
+	msgMap["TransferOptionMenu"]["Korean"] = "1. 현금 송금\n2. 계좌 이체\n원하는 작업을 선택하세요 (종료하려면 0 입력).\n> ";
 	msgMap["CashTransferInputGuide"]["English"] = "Please insert cash for transfer.\n";
 	msgMap["CashTransferInputGuide"]["Korean"] = "송금할 현금을 투입해주세요.\n";
 	msgMap["AccountNumPrompt"]["English"] = "Enter destination account number\n> ";
