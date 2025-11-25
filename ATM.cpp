@@ -27,6 +27,10 @@ void ATM::run() {
 		// "카드를 입력하세요" 메세지는 inputString 내부 혹은 displayMessage로 처리
         ui.displayMessage("EnterCardNumber");
 		string cardNumberInput = ui.inputString(""); 
+		if (cardNumberInput == "Back" || cardNumberInput == "이전") {
+		ui.displayMessage("DeactivateATM");
+		break;
+		}
 
         // Back 입력 시 종료 로직 등이 필요하면 여기에 추가
 
