@@ -174,6 +174,12 @@ void DepositTransaction::run() {
     // 입금 유형 선택 (1: 현금, 2: 수표)
     int depositType = ui.inputInt("AskDepositType"); 
     
+    // [추가] 0 입력 시 종료 처리
+    if (depositType == 0) {
+        ui.displayMessage("TransactionCancelled");
+        return;
+    }
+    
     if (depositType != 1 && depositType != 2) {
         // ui.displayErrorMessage("InvalidSelection");
         cout << "Invalid selection." << endl;
