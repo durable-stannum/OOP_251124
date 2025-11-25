@@ -8,6 +8,8 @@
 
 using namespace std;
 
+int Session::sessionCount = 0;
+
 // 1. 생성자
 Session::Session(Bank* pBank, Account* pAccount, Interface& ui, ATM* atm, map<string, Bank*>& banks) 
     : pBank(pBank), pAccount(pAccount), ui(ui), pATM(atm), allBanks(banks), withdrawalCount(0) 
@@ -16,6 +18,8 @@ Session::Session(Bank* pBank, Account* pAccount, Interface& ui, ATM* atm, map<st
     deposit = new DepositTransaction(this); 
     withdrawal = new WithdrawalTransaction(this);
     transfer = new TransferTransaction(this);
+    sessionCount = 0;
+    sessionSummary = "\n========== [Session Summary] ==========\n";
 }
 
 // 2. 소멸자
@@ -36,6 +40,27 @@ void Session::recordTransaction(const string& log) {
     if (pAccount != nullptr) {
         pAccount->addHistory(log);
     }
+}
+
+// 4. 세션 요약 기록
+void Session::recordSessionSummary(string accountNumberInput, string cardNumberInput, string transactionTypeInput, int amountInput) {
+    sessionSummary += "#";
+    string sessoinCounstStr = to_string(++sessionCount);
+    sessionSummary += sessoinCounstStr;
+    sessionSummary += "\n";
+    sessionSummary += "Account Number: ";
+    sessionSummary += accountNumberInput;
+    sessionSummary += "\n";
+    sessionSummary += "Card Number: ";
+    sessionSummary += cardNumberInput;
+    sessionSummary += "\n";
+    sessionSummary += "Transaction Type: ";
+    sessionSummary += transactionTypeInput;
+    sessionSummary += "\n";
+    sessionSummary += "Amount: ";
+    string amount = to_string(amountInput);
+    sessionSummary += amount;
+    sessionSummary += "\n";
 }
 
 void Session::run() {
@@ -90,4 +115,9 @@ void Session::run() {
             break;
         }
     }
+    // 세션 요약 출력
+    if (sessionCount == 0) {
+        cout << "\n========== [Session Summary] ==========\n" << "No sessions were conducted." << endl;
+    }
+    else cout << sessionSummary;
 }
