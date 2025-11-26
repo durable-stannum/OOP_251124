@@ -66,12 +66,17 @@ void Session::recordSessionSummary(string accountNumberInput, string cardNumberI
 void Session::run() {
     // [수정] 전체 로직을 try-catch로 감싸서 -1 입력 시 세션 종료 처리
     try {
-        // 1. 카드 비번 입력 받기
-        ui.displayMessage("EnterCardPW");
-
         string cardPWInput;
         for (int i = 0; i < 3; i++) {
-            cardPWInput = ui.inputString(""); // 여기서 -1 입력 시 throw 됨
+            while (true) {
+                // 1. 카드 비번 입력 받기
+                ui.displayMessage("EnterCardPW");
+                cardPWInput = ui.inputString("");
+                if (cardPWInput.empty()) {
+                    continue;
+                }
+                break;
+            }
 
             if (pBank->isCorrectCardPW(pAccount, cardPWInput)) {
                 ui.displayMessage("CorrectCardPW");
