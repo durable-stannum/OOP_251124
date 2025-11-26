@@ -24,10 +24,17 @@ void ATM::run() {
 
     // [수정] while(true) 반복문 제거
     // 세션이 끝나면 함수가 종료되어 Initializer의 메인 메뉴로 돌아가야 함
-
-    // [수정] cin -> ui.inputString (스냅샷 REQ 10.1 대응)
-    ui.displayMessage("EnterCardNumber");
-    string cardNumberInput = ui.inputString("");
+    // [수정] 카드 번호 입력 단계에서의 예외 처리
+    string cardNumberInput;
+    try {
+        ui.displayMessage("EnterCardNumber");
+        cardNumberInput = ui.inputString("");
+    }
+    catch (const Interface::SessionAbortException&) {
+        // -1 입력 시 언어 설정 초기화 후 종료 (메인 메뉴로 복귀)
+        language = "Unselected";
+        return;
+    }
 
     // 세션 카운트 증가 (입력 시도 기준)
     totalSessionCount++;
@@ -41,8 +48,14 @@ void ATM::run() {
 
     // 관리자 확인
     if (isAdmin(cardNumberInput)) {
-        handleAdminSession();
-        // [수정] 관리자 세션 종료 후 메인 메뉴로 복귀
+        // handleAdminSession 내부에서 -1 입력 시 예외가 올라올 수 있음
+        try {
+            handleAdminSession();
+        }
+        catch (const Interface::SessionAbortException&) {
+            // 관리자 세션 중단 시 처리
+            ui.displayMessage("SessionEnd");
+        }
         language = "Unselected";
         return;
     }
@@ -81,19 +94,19 @@ void ATM::run() {
 
 
     if (session->isSessionAborted()) {
-            // 출금 3회 초과 등 강제 종료 신호가 발생했을 경우 (Session::run()이 break로 복귀함)
-            
-            delete session;
-            
-            language = "Unselected"; // 언어 복구 (MainMenu 출력 가능하도록)
-            ui.displayMessage("SessionEnd");
-            
-            // ATM을 비활성화하고 Initializer로 돌아가 ATM 고유번호 입력창(MainMenu)으로 이동
-            return; 
-        }
+        // 출금 3회 초과 등 강제 종료 신호가 발생했을 경우 (Session::run()이 break로 복귀함)
+
+        delete session;
+
+        language = "Unselected"; // 언어 복구 (MainMenu 출력 가능하도록)
+        ui.displayMessage("SessionEnd");
+
+        // ATM을 비활성화하고 Initializer로 돌아가 ATM 고유번호 입력창(MainMenu)으로 이동
+        return;
+    }
     // 6. 세션 종료 및 정리
 
-    
+
     delete session;
 
     // [수정] 카드 삽입 단계로 돌아가는 것이 아니라 메인 메뉴로 돌아가므로 메세지 제거 혹은 변경
