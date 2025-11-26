@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <fstream> // ofstream 사용을 위해 필요
+#include <sstream> // stringstream 사용
 #include "Interface.h"
 #include "main.h" // 전역 language 변수 사용
 #include "Initializer.h"
@@ -19,12 +20,8 @@ void ATM::run() {
     ui.addATMWelcome(this);
     ui.displayMessage("ATMWelcome");
 
-    // 언어 설정
     setLanguage();
 
-    // [수정] while(true) 반복문 제거
-    // 세션이 끝나면 함수가 종료되어 Initializer의 메인 메뉴로 돌아가야 함
-    // [수정] 카드 번호 입력 단계에서의 예외 처리
     string cardNumberInput;
     try {
         while (true) {
@@ -37,36 +34,35 @@ void ATM::run() {
         }
     }
     catch (const Interface::SessionAbortException&) {
-        // -1 입력 시 언어 설정 초기화 후 종료 (메인 메뉴로 복귀)
         language = "Unselected";
         return;
     }
 
-    // 세션 카운트 증가 (입력 시도 기준)
-    totalSessionCount++;
+    // [수정] 여기서 totalSessionCount를 증가시키지 않고, Session이 실제로 기록될 때(saveSessionHistory) 카운트하거나
+    // 혹은 여기서 증가시키고 그 값을 사용할 수도 있습니다. 
+    // 여기서는 요구사항의 "Session : 1" 표기를 위해, 관리자 세션이 아닌 유저 세션 시작 시 증가시킵니다.
+    // 관리자 세션은 별도 처리하므로 제외합니다.
+    if (!isAdmin(cardNumberInput)) {
+        totalSessionCount++;
+    }
 
-    // 'Back' 또는 '이전' 입력 시 종료
     if (cardNumberInput == "Back" || cardNumberInput == "이전") {
         ui.displayMessage("DeactivateATM");
-        language = "Unselected"; // [중요] 메인 메뉴 복귀 전 언어 초기화
+        language = "Unselected";
         return;
     }
 
-    // 관리자 확인
     if (isAdmin(cardNumberInput)) {
-        // handleAdminSession 내부에서 -1 입력 시 예외가 올라올 수 있음
         try {
             handleAdminSession();
         }
         catch (const Interface::SessionAbortException&) {
-            // 관리자 세션 중단 시 처리
             ui.displayMessage("SessionEnd");
         }
         language = "Unselected";
         return;
     }
 
-    // 카드 존재 유무 확인 및 유효성 검사
     Bank* cardHoldingBank = pInit->findBankByCardNumber(cardNumberInput);
     Account* pAccount = pInit->findAccountPtrByCardNumber(cardNumberInput);
 
@@ -74,17 +70,15 @@ void ATM::run() {
         ui.displayMessage("CheckValidity");
         ui.displayMessage("IsNotValid");
         ui.displayMessage("SessionEnd");
-        language = "Unselected"; // [중요] 메인 메뉴 복귀 전 언어 초기화
+        language = "Unselected";
         return;
     }
 
-    // 3. ATM 유형에 따른 사용 가능 여부 검사 (Single/Multi)
     if (!handleUserSession(cardNumberInput, cardHoldingBank)) {
-        language = "Unselected"; // [중요] 메인 메뉴 복귀 전 언어 초기화
+        language = "Unselected";
         return;
     }
 
-    // 4. ⭐️ 검증 완료 후 Session 생성
     ui.displayMessage("SessionStart");
 
     Session* session = new Session(
@@ -95,83 +89,75 @@ void ATM::run() {
         pInit->getAllBanks()
     );
 
-    // 5. 세션 실행 (비밀번호 입력 파트로 진입)
     session->run();
 
-
     if (session->isSessionAborted()) {
-        // 출금 3회 초과 등 강제 종료 신호가 발생했을 경우 (Session::run()이 break로 복귀함)
-
         delete session;
-
-        language = "Unselected"; // 언어 복구 (MainMenu 출력 가능하도록)
+        language = "Unselected";
         ui.displayMessage("SessionEnd");
-
-        // ATM을 비활성화하고 Initializer로 돌아가 ATM 고유번호 입력창(MainMenu)으로 이동
         return;
     }
-    // 6. 세션 종료 및 정리
-
 
     delete session;
-
-    // [수정] 카드 삽입 단계로 돌아가는 것이 아니라 메인 메뉴로 돌아가므로 메세지 제거 혹은 변경
-    // ui.displayMessage("GoBackToEnteringCardNumber"); (제거됨)
-
-    // [중요] 메인 메뉴(Initializer)로 돌아가기 위해 언어 상태 초기화
     language = "Unselected";
 }
 
 void ATM::setLanguage() {
     if (this->getLanguageMode() == "Bilingual") {
-        // [수정] 숫자 입력으로 안전하게 처리
         ui.displayMessage("ChooseLanguage");
-
-        // 임시로 cin 대신 inputString 사용
         string langChoice = ui.inputString("");
 
         if (langChoice == "2" || langChoice == "Korean" || langChoice == "한국어") {
             language = "Korean";
         }
         else {
-            language = "English"; // 기본값
+            language = "English";
         }
     }
-    else { // Unilingual
+    else {
         language = "English";
     }
-    // 안내 메세지 출력
     ui.addLanguageModeNotification(this->getLanguageMode());
     ui.displayMessage("LanguageModeNotification");
 }
 
 bool ATM::isAdmin(const string& cardNumberInput) {
-    // "admin" + [주거래은행이름]
     string targetAdminNum = "admin" + pPrimaryBank->getPrimaryBank();
     return cardNumberInput == targetAdminNum;
 }
 
-// [추가] 거래 내역 기록
-void ATM::addHistory(const string& log) {
+// [수정] 단순 문자열 추가가 아니라, 세션 정보를 포맷팅해서 저장
+void ATM::saveSessionHistory(const string& cardNum, const string& accNum, const string& sessionLogs) {
+    stringstream ss;
+
+    // 구분선 (첫 세션이면 제외하거나 포함하거나 선택)
+    // if (!atmTransactionHistory.empty()) ss << "----------------------------------------\n";
+
+    // [REQ Format Implementation]
+    ss << "Session : " << totalSessionCount << endl;
+    ss << "Card number: " << cardNum << endl;
+    ss << accNum << "'s transaction history" << endl;
+    ss << sessionLogs; // transaction logs (이미 개행 포함됨)
+    // ss << "\n----------------------------------------"; // 세션 간 구분선
+
     if (!atmTransactionHistory.empty()) {
         atmTransactionHistory += "\n";
     }
-    atmTransactionHistory += log;
+    atmTransactionHistory += ss.str();
 }
 
 void ATM::handleAdminSession() {
     ui.displayMessage("TransactionHistoryMenu");
 
-    // [수정] cin -> ui.inputInt
     int choice = ui.inputInt("");
 
     switch (choice) {
-    case 1: // 내역 출력 및 저장
+    case 1:
         cout << "========== Transaction History ==========" << endl;
-
-        cout << "[Summary]" << endl;
-        cout << "Total Sessions: " << totalSessionCount << endl; // 총 세션 수 출력
-        cout << "-----------------------------------------" << endl;
+        // cout << "[Summary]" << endl;
+        cout << "Total called session : " << totalSessionCount << endl;
+        cout << "Transaction history of ATM :" << endl;
+        cout << "=========================================" << endl;
 
         if (atmTransactionHistory.empty()) {
             cout << "No transactions yet." << endl;
@@ -191,28 +177,23 @@ void ATM::handleAdminSession() {
         ui.displayMessage("SessionEnd");
         break;
     case 2:
-        // 나가기 선택 시 그냥 종료 (상위 run()에서 language 초기화 후 리턴됨)
         break;
     default:
-        // ui.displayErrorMessage("InvalidSelection");
         cout << "Invalid selection." << endl;
         break;
     }
 }
 
 bool ATM::writeHistoryToFile(const string& historyContent) const {
-    // 파일명 포맷: ATM_serial_History.txt
     string filename = "ATM_" + serialNumber + "_History_" + ".txt";
     ofstream outFile(filename);
     if (outFile.is_open()) {
-        outFile << "[ ATM Information ]" << endl;
-        outFile << "Primary Bank: " << pPrimaryBank->getPrimaryBank() << endl;
-        outFile << "Serial: " << serialNumber << endl;
-        outFile << "Type: " << type << endl;
-        outFile << "Language: " << languageMode << endl;
-        outFile << "Total Sessions: " << totalSessionCount << endl;
-        outFile << "========================================" << endl;
-        outFile << "[ Transaction History ]" << endl;
+        outFile << "Transaction history output successed." << endl;
+        outFile << "======================================" << endl;
+        outFile << "======================================" << endl;
+        outFile << "Total called session : " << totalSessionCount << endl;
+        outFile << "Transaction history of ATM :" << endl;
+        outFile << "======================================" << endl;
         outFile << historyContent << endl;
         outFile.close();
         return true;
@@ -223,10 +204,9 @@ bool ATM::writeHistoryToFile(const string& historyContent) const {
 bool ATM::handleUserSession(const string& cardNumberInput, Bank* cardHoldingBank) {
     ui.displayMessage("CheckValidity");
     if (isSingle()) {
-        if (!isValid(cardNumberInput, cardHoldingBank)) { // 타행 카드 거절
+        if (!isValid(cardNumberInput, cardHoldingBank)) {
             ui.displayMessage("IsNotValid");
             ui.displayMessage("SessionEnd");
-            // ui.displayMessage("GoBackToEnteringCardNumber"); // 제거
             return false;
         }
     }
@@ -239,11 +219,9 @@ bool ATM::isSingle() const {
 }
 
 bool ATM::isValid(const string& cardNumberInput, Bank* cardBank) const {
-    // Initializer를 통해 카드 번호로 은행을 찾아서 주거래 은행과 비교
     if (isSingle()) {
         return cardBank == pPrimaryBank;
     }
-
     return true;
 }
 
@@ -258,7 +236,6 @@ bool ATM::dispenseCash(long amount) {
     CashDenominations tempCash = availableCash;
     long remainingAmount = amount;
 
-    // Greedy Algorithm (50k -> 10k -> 5k -> 1k)
     int count50k = min((long)tempCash.c50k, remainingAmount / 50000);
     remainingAmount -= (long)count50k * 50000;
 
