@@ -11,10 +11,13 @@ class ATM; // 전방 선언
 
 class Interface {
 private:
-	map<string, map<string, string>> msgMap; 
+	map<string, map<string, string>> msgMap;
 
 public:
-	Interface(); 
+	// [추가] 세션 강제 종료를 위한 예외 클래스 정의
+	class SessionAbortException {};
+
+	Interface();
 
 	void addMessages();
 	void addMainMenu(const vector<ATM*>& allATMs);
@@ -24,11 +27,8 @@ public:
 	void displayMessage(string msgKey);
 	void displayErrorMessage(string msgKey);
 
-	// [수정] 스냅샷 기능을 위해 내부 로직 변경됨
 	int inputInt(string msgKey);
 	long inputCheckAmount(string msgKey);
-	
-	// [추가] 문자열 입력 함수 (카드번호, 시리얼번호 등)
 	string inputString(string msgKey);
 
 	void totalCheckInfo(int amount, int count);
