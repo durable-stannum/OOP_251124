@@ -161,7 +161,7 @@ void ATM::handleAdminSession() {
 
 bool ATM::writeHistoryToFile(const string& historyContent) const {
     // 파일명 포맷: ATM_serial_History_Language.txt
-	string filename = "ATM_" + serialNumber + "_History_" + language + ".txt";
+	string filename = "ATM_" + serialNumber + "_History_" + ".txt";
 	ofstream outFile(filename);
 	if (outFile.is_open()) {
 		outFile << "[ ATM Information ]" << endl;
