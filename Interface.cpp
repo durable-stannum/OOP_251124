@@ -410,6 +410,7 @@ int Interface::inputInt(string msgKey) {
 		catch (...) {
 			if (msgMap.find("InvalidInput_Number") != msgMap.end())
 				cout << msgMap["InvalidInput_Number"][language] << endl;
+			else if (language == "Korean") cout << "유효한 숫자를 입력해주세요.\n";
 			else cout << "Please enter a valid number.\n";
 		}
 	}
@@ -437,6 +438,7 @@ long Interface::inputCheckAmount(string msgKey) {
 			if (amount < 0) {
 				if (msgMap.find("InvalidInput_Negative") != msgMap.end())
 					cout << msgMap["InvalidInput_Negative"][language];
+				else if (language == "Korean") cout << "음수는 허용되지 않습니다.\n";
 				else cout << "Negative number not allowed.\n";
 				continue;
 			}
@@ -445,6 +447,7 @@ long Interface::inputCheckAmount(string msgKey) {
 		catch (...) {
 			if (msgMap.find("InvalidInput_Number") != msgMap.end())
 				cout << msgMap["InvalidInput_Number"][language] << endl;
+			else if (language == "Korean") cout << "유효한 숫자를 입력해주세요.\n";
 			else cout << "Please enter a valid number.\n";
 		}
 	}
@@ -492,6 +495,7 @@ void Interface::totalCheckInfo(int amount, int count) {
 void Interface::wait() {
 	if (msgMap.find("PressEnter") != msgMap.end())
 		cout << msgMap["PressEnter"][language];
+	else if (language == "Korean") cout << "계속하려면 Enter 누르기...\n";
 	else cout << "Press Enter to continue...";
 
 	if (cin.rdbuf()->in_avail() > 0) {
