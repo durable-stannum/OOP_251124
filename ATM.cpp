@@ -38,19 +38,14 @@ void ATM::run() {
         return;
     }
 
-    // [수정] 여기서 totalSessionCount를 증가시키지 않고, Session이 실제로 기록될 때(saveSessionHistory) 카운트하거나
-    // 혹은 여기서 증가시키고 그 값을 사용할 수도 있습니다. 
-    // 여기서는 요구사항의 "Session : 1" 표기를 위해, 관리자 세션이 아닌 유저 세션 시작 시 증가시킵니다.
-    // 관리자 세션은 별도 처리하므로 제외합니다.
-    if (!isAdmin(cardNumberInput)) {
-        totalSessionCount++;
-    }
-
     if (cardNumberInput == "Back" || cardNumberInput == "이전") {
         ui.displayMessage("DeactivateATM");
         language = "Unselected";
         return;
     }
+
+    // [수정] Admin 여부와 상관없이 카드 입력 시 즉시 세션 카운트 증가
+    totalSessionCount++;
 
     if (isAdmin(cardNumberInput)) {
         try {
@@ -59,6 +54,11 @@ void ATM::run() {
         catch (const Interface::SessionAbortException&) {
             ui.displayMessage("SessionEnd");
         }
+
+        // [추가] Admin 세션이 끝난 후 이력을 저장 (현재 조회 시에는 안 뜨고, 다음 조회부터 뜸)
+        // AccNum 자리에는 "Administrator", 로그에는 "Admin access" 기록
+        saveSessionHistory(cardNumberInput, "Administrator", "Admin access");
+
         language = "Unselected";
         return;
     }
@@ -130,15 +130,11 @@ bool ATM::isAdmin(const string& cardNumberInput) {
 void ATM::saveSessionHistory(const string& cardNum, const string& accNum, const string& sessionLogs) {
     stringstream ss;
 
-    // 구분선 (첫 세션이면 제외하거나 포함하거나 선택)
-    // if (!atmTransactionHistory.empty()) ss << "----------------------------------------\n";
-
     // [REQ Format Implementation]
     ss << "Session : " << totalSessionCount << endl;
     ss << "Card number: " << cardNum << endl;
     ss << accNum << "'s transaction history" << endl;
     ss << sessionLogs; // transaction logs (이미 개행 포함됨)
-    // ss << "\n----------------------------------------"; // 세션 간 구분선
 
     if (!atmTransactionHistory.empty()) {
         atmTransactionHistory += "\n";
