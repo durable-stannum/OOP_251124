@@ -11,7 +11,8 @@ using namespace std;
 int Transaction::nextID = 1;
 
 Transaction::Transaction(Session* session) : pSession(session) {
-    transactionID = nextID++;
+    // [수정] 생성 시점이 아니라 실행 시점에 ID를 부여하기 위해 여기서는 할당하지 않음 (또는 0으로 초기화)
+    transactionID = 0;
 }
 
 int Transaction::getTransactionID() const {
@@ -26,12 +27,12 @@ long Transaction::calculateFee(TransactionType type, const string& destBankName)
     // nullptr 체크 (안전장치)
     if (!userBankPtr || !atm) return 0;
 
-    const string userBank  = userBankPtr->getPrimaryBank(); 
-    const string atmBank   = atm->getPrimaryBankName(); // ATM 수정 시 getPrimaryBankName()으로 통일했다고 가정
-    const string destBank  = destBankName; 
+    const string userBank = userBankPtr->getPrimaryBank();
+    const string atmBank = atm->getPrimaryBankName(); // ATM 수정 시 getPrimaryBankName()으로 통일했다고 가정
+    const string destBank = destBankName;
 
     bool isUserPrimary = (userBank == atmBank);
-    
+
     switch (type) {
     case TransactionType::DEPOSIT:
         // [REQ 1.8] Primary: 0, Non-Primary: 1000
@@ -80,8 +81,8 @@ bool Transaction::collectFee(long fee, CashDenominations& outFeeCash) {
     cout << endl;
 
     int feeBillsRequired = fee / 1000;
-    
-    ui.displayMessage("FeePromptPart1"); 
+
+    ui.displayMessage("FeePromptPart1");
     cout << feeBillsRequired;
     ui.displayMessage("FeePromptPart2");
 
@@ -89,15 +90,15 @@ bool Transaction::collectFee(long fee, CashDenominations& outFeeCash) {
     int feeBillsInserted = ui.inputInt("Input1kCount");
 
     if (feeBillsInserted < feeBillsRequired) {
-        ui.displayMessage("InsufficientFee"); 
+        ui.displayMessage("InsufficientFee");
         return false;
     }
 
     // 거스름돈 기능은 없으므로, 딱 맞춰 냈거나 더 냈어도 수수료만큼만 가져감(혹은 더 낸 거 반환 로직 필요하지만 여기선 생략)
-    outFeeCash.c1k = feeBillsInserted; 
-    
+    outFeeCash.c1k = feeBillsInserted;
+
     // 만약 사용자가 2000원(2장) 내야 하는데 3장 넣었다면?
     // ATM 시재에는 받은 만큼 추가되어야 하므로, 그대로 outFeeCash에 넣습니다.
-    
+
     return true;
 }
