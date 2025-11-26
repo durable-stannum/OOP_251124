@@ -168,7 +168,7 @@ void Interface::addMessages() {
 	msgMap["InvalidInput_Negative"]["English"] = "Negative number can not be accepted.\n";
 	msgMap["InvalidInput_Negative"]["Korean"] = "음수는 입력할 수 없습니다.\n";
 
-	msgMap["ExceedCashLimit"]["English"] = "Cash insertion limit exceeded. You can insert up to 50 notes.\n";
+	msgMap["ExceedCashLimit"]["English"] = "Cash insertion limit exceeded. You can insert up to 50 papers.\n";
 	msgMap["ExceedCashLimit"]["Korean"] = "현금 삽입 제한을 초과했습니다. 현금은 최대 50장까지만 삽입할 수 있습니다.\n";
 
 	msgMap["NoCashInserted"]["English"] = "Cash is not inserted.\n";
