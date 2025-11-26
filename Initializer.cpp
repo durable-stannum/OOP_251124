@@ -15,7 +15,7 @@ using namespace std;
 Initializer::Initializer(ifstream& fin, Interface& uiInput) : ui(uiInput) {
     if (!fin.is_open()) {
         // main에서 체크하지만 안전을 위해 한번 더
-        return; 
+        return;
     }
 
     int B, A, N;
@@ -27,21 +27,21 @@ Initializer::Initializer(ifstream& fin, Interface& uiInput) : ui(uiInput) {
         string bankName;
         getline(fin, bankName);
         Bank* pBank = new Bank(bankName);
-        allBanks[bankName] = pBank; 
+        allBanks[bankName] = pBank;
     }
 
     // 2. Account 생성
     for (int i = 0; i < A; i++) {
         string bankName, userName, accountNumber, availableFundsStr;
         string cardNumber, cardPassword;
-        
+
         getline(fin, bankName);
         getline(fin, userName);
         getline(fin, accountNumber);
         getline(fin, availableFundsStr);
         getline(fin, cardNumber);
         getline(fin, cardPassword);
-        
+
         // [수정] int -> long long (stoll 사용)
         long long availableFunds = stoll(availableFundsStr);
 
@@ -58,7 +58,8 @@ Initializer::Initializer(ifstream& fin, Interface& uiInput) : ui(uiInput) {
         // 은행이 존재하는지 확인 후 추가
         if (allBanks.find(bankName) != allBanks.end()) {
             allBanks[bankName]->addAccount(pAccount);
-        } else {
+        }
+        else {
             // 에러 처리 혹은 무시 (메모리 해제 필요)
             delete pAccount;
         }
@@ -92,9 +93,6 @@ Initializer::~Initializer() {
         delete atm;
     }
     // Bank 해제 (Bank 소멸자에서 Account도 해제해준다고 가정하거나, 여기서 Account도 처리 필요)
-    // 일반적으로 Bank가 Account의 소유권을 가진다면 Bank만 지워도 됨.
-    // 현재 구조상 Bank -> addAccount -> map에 저장. 
-    // Bank 소멸자가 없다면 메모리 누수 발생 가능. Bank 소멸자 추가 권장.
     for (auto& pair : allBanks) {
         delete pair.second;
     }
@@ -105,16 +103,17 @@ void Initializer::run() {
     while (true) {
         ui.displayMessage("MainMenu");
         ui.displayMessage("EnterATMSerialNumber");
-        
+
         // [수정] cin -> ui.inputString (스냅샷 대응)
         string serialNumberInput = ui.inputString("");
 
         ATM* selectedATM = findATMBySerialNumber(serialNumberInput);
         if (selectedATM != nullptr) {
             selectedATM->run();
-        } else {
+        }
+        else {
             // 잘못된 시리얼 번호 처리 (메세지 출력 등)
-            cout << "Invalid Serial Number." << endl; 
+            cout << "Invalid Serial Number." << endl;
         }
     }
 }
@@ -150,33 +149,45 @@ Account* Initializer::findAccountPtrByCardNumber(const string& cardNumberInput) 
 // [REQ 10.1] 스냅샷 출력 구현
 void Initializer::printSnapshot() {
     cout << "\n==================== DEBUG SNAPSHOT ====================" << endl;
-    
+
     // 1. ATM 정보 출력
     cout << "[ ATM List ]" << endl;
     for (ATM* atm : allATMs) {
-        cout << "Serial: " << atm->getSerialNumber() 
-             << " (" << atm->getType() << ", " << atm->getLanguageMode() << ")" << endl;
-        
+        // [수정] Primary Bank 정보 추가
+        cout << "Serial: " << atm->getSerialNumber()
+            << " | Primary Bank: " << atm->getPrimaryBankName()
+            << " (" << atm->getType() << ", " << atm->getLanguageMode() << ")" << endl;
+
         CashDenominations cash = atm->getCash();
-        cout << "   Remianing Cash: " 
-             << "50k(" << cash.c50k << ") "
-             << "10k(" << cash.c10k << ") "
-             << "5k(" << cash.c5k << ") "
-             << "1k(" << cash.c1k << ")" << endl;
+
+        // [추가] 총액 계산
+        long long totalCashAmount = (long long)cash.c50k * 50000
+            + (long long)cash.c10k * 10000
+            + (long long)cash.c5k * 5000
+            + (long long)cash.c1k * 1000;
+
+        // [수정] 권종별 장수와 총액 함께 출력
+        cout << "   Remianing Cash: "
+            << "50k(" << cash.c50k << ") "
+            << "10k(" << cash.c10k << ") "
+            << "5k(" << cash.c5k << ") "
+            << "1k(" << cash.c1k << ")"
+            << " | Total: " << totalCashAmount << " KRW" << endl;
     }
     cout << "--------------------------------------------------------" << endl;
 
     // 2. Account 정보 출력
     cout << "[ Account List ]" << endl;
     for (auto const& [bankName, bankPtr] : allBanks) {
-        // Bank::getAccounts()를 사용 (Bank.h 수정 전제)
+        // Bank::getAccounts()를 사용
         const map<string, Account*>& accounts = bankPtr->getAccounts();
-        
+
         for (auto const& [accNum, accPtr] : accounts) {
             cout << "Bank: " << bankName << " | Name: " << accPtr->getUserName() << endl;
-            cout << "   Acct No: " << accPtr->getAccountNumber() 
-                 << " | Balance: " << accPtr->getBalance() << endl;
+            cout << "   Acct No: " << accPtr->getAccountNumber()
+                << " | Balance: " << accPtr->getBalance() << endl;
         }
     }
     cout << "========================================================" << endl;
 }
+
