@@ -25,18 +25,18 @@ void Interface::addMessages() {
 		"> ";
 	msgMap["FileOpenSuccess"]["Unselected"] = "\nFile opened successfully (파일 열기 성공)\n";
 	msgMap["FileOpenFail"]["Unselected"] = "\nFailed to open file (파일 열기 실패)\n";
-	msgMap["EnterATMSerialNumber"]["Unselected"] = 
+	msgMap["EnterATMSerialNumber"]["Unselected"] =
 		"Enter ATM's serial number. (ATM의 고유번호를 입력하세요.)\n"
 		"> ";
-	msgMap["ChooseLanguage"]["Unselected"] = 
+	msgMap["ChooseLanguage"]["Unselected"] =
 		"Press 1 or 2 to choose one language. [1. English/2. Korean] (언어를 선택하기 위해 1 또는 2를 누르세요. (1. 영어/2. 한국어)\n"
 		"> ";
 
 	// ATM의 언어가 정해진 후
-	msgMap["EnterCardNumber"]["English"] = 
+	msgMap["EnterCardNumber"]["English"] =
 		"\nInsert your card into the slot and enter the card number(Include '-'). (Enter 'Back' to quit.)\n"
 		"> ";
-	msgMap["EnterCardNumber"]["Korean"] = 
+	msgMap["EnterCardNumber"]["Korean"] =
 		"\n카드를 슬롯에 삽입하고 카드 번호('-' 포함)를 입력하세요. (나가려면 '이전'을 입력하세요.)\n"
 		"> ";
 
@@ -51,7 +51,7 @@ void Interface::addMessages() {
 
 	msgMap["IsValid"]["English"] = "Card accepted\n";
 	msgMap["IsValid"]["Korean"] = "카드 사용 가능\n";
-	
+
 	msgMap["SessionStart"]["English"] = "Session is started.\n";
 	msgMap["SessionStart"]["Korean"] = "세션이 시작되었습니다.\n";
 
@@ -79,10 +79,10 @@ void Interface::addMessages() {
 	msgMap["FileWritingFailure"]["English"] = "Failed to export file\n";
 	msgMap["FileWritingFailure"]["Korean"] = "파일 내보내기에 실패했습니다.\n";
 
-	msgMap["EnterCardPW"]["English"] = 
+	msgMap["EnterCardPW"]["English"] =
 		"\nEnter card password\n"
 		"> ";
-	msgMap["EnterCardPW"]["Korean"] = 
+	msgMap["EnterCardPW"]["Korean"] =
 		"\n카드 비밀번호를 입력하세요.\n"
 		"> ";
 
@@ -95,7 +95,7 @@ void Interface::addMessages() {
 	msgMap["PwIncorrect3Times"]["English"] = "Incorrect password entered three times in a row.\n";
 	msgMap["PwIncorrect3Times"]["Korean"] = "비밀번호가 3번 연속으로 잘못 입력되었습니다.\n";
 
-	msgMap["SessionMenu"]["English"] = 
+	msgMap["SessionMenu"]["English"] =
 		"======================================================================================================\n"
 		"[ Session Menu ]\n"
 		"------------------------------------------------------------------------------------------------------\n"
@@ -104,7 +104,7 @@ void Interface::addMessages() {
 		"3. Transfer\n"
 		"Enter the transaction number (Enter 0 to quit).\n"
 		"> ";
-	msgMap["SessionMenu"]["Korean"] = 
+	msgMap["SessionMenu"]["Korean"] =
 		"======================================================================================================\n"
 		"[ 세션 메뉴 ]\n"
 		"------------------------------------------------------------------------------------------------------\n"
@@ -121,14 +121,14 @@ void Interface::addMessages() {
 	msgMap["SessionEnd"]["Korean"] = "세션이 종료되었습니다.\n";
 
 	msgMap["GoBackToEnteringCardNumber"]["English"] = "Returning to the card insertion and card number entry step.\n";
-	msgMap["GoBackToEnteringCardNumber"]["Korean"] = "카드 삽입 및 카드 번호 입력 단계로 돌아갑니다.\n";
-	
+	msgMap["GoBackToEnteringCardNumber"]["Korean"] = "새로운 세션인 카드 삽입 및 카드 번호 입력 단계로 돌아갑니다.\n";
+
 	msgMap["AskDepositType"]["English"] =
 		"1. Cash Deposit\n"
 		"2. Check Deposit\n"
 		"Enter deposit type number (Enter 0 to quit).\n"
 		"> ";
-	msgMap["AskDepositType"]["Korean"] = 
+	msgMap["AskDepositType"]["Korean"] =
 		"1. 현금 입금\n"
 		"2. 수표 입금\n"
 		"입금 종류 번호를 입력하세요 (종료하려면 0 입력).\n"
@@ -140,7 +140,7 @@ void Interface::addMessages() {
 	msgMap["Input50kCount"]["Korean"] =
 		"50000원의 장수를 입력하세요.\n"
 		"> ";
-	
+
 	msgMap["Input10kCount"]["English"] =
 		"Enter the number of 10000Won.\n"
 		"> ";
@@ -175,24 +175,24 @@ void Interface::addMessages() {
 	msgMap["NoCashInserted"]["Korean"] = "현금이 삽입되지 않았습니다.\n";
 
 	msgMap["CheckInsertionRule"]["English"] =
-        "=================[ Check Deposit Rules ]=================\n"
-        "- Minimum check amount: 100,000 KRW\n"
-        "- Maximum checks per transaction: 30\n"
-        "- Transaction fee must be paid in cash (1,000 KRW bills)\n"
-        "=========================================================\n";
-    msgMap["CheckInsertionRule"]["Korean"] =
-        "=================[ 수표 입금 안내 ]=================\n"
-        "- 수표 최소 금액: 100,000원\n"
-        "- 1회 최대 입금 장수: 30장\n"
-        "- 수수료는 반드시 현금(1,000원권)으로 투입해야 합니다.\n"
-        "====================================================\n";
-	
-    msgMap["EnterCheckAmount"]["English"] =
-        "Enter the check amount. (Enter 0 to finish insertion)\n"
-        "> ";
-    msgMap["EnterCheckAmount"]["Korean"] =
-        "수표 금액을 입력해 주세요. (입력을 종료하려면 0을 입력하세요)\n"
-        "> ";
+		"=================[ Check Deposit Rules ]=================\n"
+		"- Minimum check amount: 100,000 KRW\n"
+		"- Maximum checks per transaction: 30\n"
+		"- Transaction fee must be paid in cash (1,000 KRW bills)\n"
+		"=========================================================\n";
+	msgMap["CheckInsertionRule"]["Korean"] =
+		"=================[ 수표 입금 안내 ]=================\n"
+		"- 수표 최소 금액: 100,000원\n"
+		"- 1회 최대 입금 장수: 30장\n"
+		"- 수수료는 반드시 현금(1,000원권)으로 투입해야 합니다.\n"
+		"====================================================\n";
+
+	msgMap["EnterCheckAmount"]["English"] =
+		"Enter the check amount. (Enter 0 to finish insertion)\n"
+		"> ";
+	msgMap["EnterCheckAmount"]["Korean"] =
+		"수표 금액을 입력해 주세요. (입력을 종료하려면 0을 입력하세요)\n"
+		"> ";
 
 	msgMap["InvalidCheckAmount"]["English"] = "Invalid check amount. Minimum is 100,000 KRW.\n";
 	msgMap["InvalidCheckAmount"]["Korean"] = "유효하지 않은 수표 금액입니다. 10만원 이상만 가능합니다.\n";
@@ -212,7 +212,7 @@ void Interface::addMessages() {
 
 	msgMap["CheckInsertionConfirm"]["English"] = "Checks inserted successfully.\n";
 	msgMap["CheckInsertionConfirm"]["Korean"] = "수표 투입이 완료되었습니다.\n";
-	
+
 
 	msgMap["WonUnit"]["English"] = " KRW";
 	msgMap["WonUnit"]["Korean"] = "원";
@@ -312,8 +312,8 @@ void Interface::addMessages() {
 	msgMap["ReceiverLabel"]["Korean"] = "받는 분: ";
 
 	msgMap["PressEnter"]["English"] = "Press Enter to continue...";
-    msgMap["PressEnter"]["Korean"] = "계속하려면 엔터 키를 누르세요...";
-	
+	msgMap["PressEnter"]["Korean"] = "계속하려면 엔터 키를 누르세요...";
+
 }
 
 
@@ -322,7 +322,7 @@ void Interface::addMessages() {
 // 메세지 맵에 문구 추가 (parameter 필요)								<< 추가->출력보다는 인자로 무언가 받고 바로 출력하는 거로 고치기
 //===================================================================
 void Interface::addMainMenu(const vector<ATM*>& allATMs) {
-    string message;
+	string message;
 	message += "======================================================================================================\n";
 	message += "[ Main Menu | 메인 메뉴 ]\n";
 	message += "------------------------------------------------------------------------------------------------------\n";
@@ -339,7 +339,7 @@ void Interface::addMainMenu(const vector<ATM*>& allATMs) {
 }
 
 void Interface::addATMWelcome(const ATM* atm) {
-    string message;
+	string message;
 	message += "======================================================================================================\n";
 	message += "[ Welcome. ATM ";
 	message += atm->getSerialNumber();
@@ -351,30 +351,30 @@ void Interface::addATMWelcome(const ATM* atm) {
 }
 
 void Interface::addLanguageModeNotification(string languageMode) {
-    if (languageMode == "Bilingual") {
+	if (languageMode == "Bilingual") {
 		msgMap["LanguageModeNotification"]["English"] = "Language is set to English.\n";
 		msgMap["LanguageModeNotification"]["Korean"] = "언어가 한국어로 설정되었습니다.\n";
 	}
 	else if (languageMode == "Unilingual") {
 		msgMap["LanguageModeNotification"]["English"] = "Since this is a unilingual ATM, language is set to English.\n";
-        msgMap["LanguageModeNotification"]["Korean"] = "Since this is a unilingual ATM, language is set to English.\n"; // 한국어 모드에서도 영어 출력
+		msgMap["LanguageModeNotification"]["Korean"] = "Since this is a unilingual ATM, language is set to English.\n"; // 한국어 모드에서도 영어 출력
 	}
 }
 
 void Interface::displayMessage(string msgKey) {
-    // 키가 없으면 에러 방지를 위해 키 자체를 출력하거나 안전 처리
-    if (msgMap.find(msgKey) == msgMap.end()) {
-        cout << "[Error: Message Key '" << msgKey << "' not found]" << endl;
-        return;
-    }
+	// 키가 없으면 에러 방지를 위해 키 자체를 출력하거나 안전 처리
+	if (msgMap.find(msgKey) == msgMap.end()) {
+		cout << "[Error: Message Key '" << msgKey << "' not found]" << endl;
+		return;
+	}
 	cout << msgMap[msgKey][language];
 }
 
 void Interface::displayErrorMessage(string msgKey) {
-    if (msgMap.find(msgKey) == msgMap.end()) {
-        cout << "[Error: Message Key '" << msgKey << "' not found]" << endl;
-        return;
-    }
+	if (msgMap.find(msgKey) == msgMap.end()) {
+		cout << "[Error: Message Key '" << msgKey << "' not found]" << endl;
+		return;
+	}
 	cout << msgMap[msgKey][language];
 }
 
@@ -382,29 +382,35 @@ void Interface::displayErrorMessage(string msgKey) {
 int Interface::inputInt(string msgKey) {
 	string input;
 	while (true) {
-        if (!msgKey.empty()) displayMessage(msgKey);
+		if (!msgKey.empty()) displayMessage(msgKey);
 		cin >> input;
 
-        // 스냅샷 체크
-        if (input == "/") {
-            if (globalInitializer != nullptr) globalInitializer->printSnapshot();
-            continue; 
-        }
+		// [추가] -1 입력 시 예외 발생
+		if (input == "-1") {
+			throw SessionAbortException();
+		}
 
-        // 숫자 변환 시도
+		// 스냅샷 체크
+		if (input == "/") {
+			if (globalInitializer != nullptr) globalInitializer->printSnapshot();
+			continue;
+		}
+
+		// 숫자 변환 시도
 		try {
 			int count = stoi(input);
 			if (count < 0) {
-                if (msgMap.find("InvalidInput_Negative") != msgMap.end())
-				    cout << msgMap["InvalidInput_Negative"][language];
-                else cout << "Negative number not allowed.\n";
+				if (msgMap.find("InvalidInput_Negative") != msgMap.end())
+					cout << msgMap["InvalidInput_Negative"][language];
+				else cout << "Negative number not allowed.\n";
 				continue;
 			}
 			return count;
-		} catch (...) {
-            if (msgMap.find("InvalidInput_Number") != msgMap.end())
-			    cout << msgMap["InvalidInput_Number"][language] << endl;
-            else cout << "Please enter a valid number.\n";
+		}
+		catch (...) {
+			if (msgMap.find("InvalidInput_Number") != msgMap.end())
+				cout << msgMap["InvalidInput_Number"][language] << endl;
+			else cout << "Please enter a valid number.\n";
 		}
 	}
 }
@@ -413,52 +419,63 @@ int Interface::inputInt(string msgKey) {
 long Interface::inputCheckAmount(string msgKey) {
 	string input;
 	while (true) {
-        if (!msgKey.empty()) displayMessage(msgKey);
+		if (!msgKey.empty()) displayMessage(msgKey);
 		cin >> input;
 
-        if (input == "/") {
-            if (globalInitializer != nullptr) globalInitializer->printSnapshot();
-            continue; 
-        }
+		// [추가] -1 입력 시 예외 발생
+		if (input == "-1") {
+			throw SessionAbortException();
+		}
+
+		if (input == "/") {
+			if (globalInitializer != nullptr) globalInitializer->printSnapshot();
+			continue;
+		}
 
 		try {
 			long long amount = stoll(input); // stoll 사용 (long long)
 			if (amount < 0) {
 				if (msgMap.find("InvalidInput_Negative") != msgMap.end())
-				    cout << msgMap["InvalidInput_Negative"][language];
-                else cout << "Negative number not allowed.\n";
+					cout << msgMap["InvalidInput_Negative"][language];
+				else cout << "Negative number not allowed.\n";
 				continue;
 			}
 			return (long)amount;
-		} catch (...) {
+		}
+		catch (...) {
 			if (msgMap.find("InvalidInput_Number") != msgMap.end())
-			    cout << msgMap["InvalidInput_Number"][language] << endl;
-            else cout << "Please enter a valid number.\n";
+				cout << msgMap["InvalidInput_Number"][language] << endl;
+			else cout << "Please enter a valid number.\n";
 		}
 	}
 }
 
 // [추가] 문자열 입력 (스냅샷 대응)
 string Interface::inputString(string msgKey) {
-    string input;
-    while (true) {
-        if (!msgKey.empty()) displayMessage(msgKey);
-        cin >> input;
-        // ⭐️ 1. 이전 버퍼 잔여물(selectLanguage 등) 제거
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        
-             // 3. 스냅샷 체크
-            if (input == "/") {
-                if (globalInitializer != nullptr) globalInitializer->printSnapshot();
-                continue; 
-            }
-            
-            // 빈 문자열이 아닌 경우 (유효성 검사는 ATM에서 처리)
-            if (!input.empty()) {
-                return input;
-            }
-    }
-	
+	string input;
+	while (true) {
+		if (!msgKey.empty()) displayMessage(msgKey);
+		cin >> input;
+		// ⭐️ 1. 이전 버퍼 잔여물(selectLanguage 등) 제거
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+		// [추가] -1 입력 시 예외 발생
+		if (input == "-1") {
+			throw SessionAbortException();
+		}
+
+		// 3. 스냅샷 체크
+		if (input == "/") {
+			if (globalInitializer != nullptr) globalInitializer->printSnapshot();
+			continue;
+		}
+
+		// 빈 문자열이 아닌 경우 (유효성 검사는 ATM에서 처리)
+		if (!input.empty()) {
+			return input;
+		}
+	}
+
 }
 
 void Interface::totalCheckInfo(int amount, int count) {
@@ -471,12 +488,12 @@ void Interface::totalCheckInfo(int amount, int count) {
 }
 
 void Interface::wait() {
-    if (msgMap.find("PressEnter") != msgMap.end())
-        cout << msgMap["PressEnter"][language];
-    else cout << "Press Enter to continue...";
-	
-    if (cin.rdbuf()->in_avail() > 0) {
-        cin.ignore(10000, '\n'); // 10000자 무시하고 엔터만 찾음
-    }
-    cin.get(); 
+	if (msgMap.find("PressEnter") != msgMap.end())
+		cout << msgMap["PressEnter"][language];
+	else cout << "Press Enter to continue...";
+
+	if (cin.rdbuf()->in_avail() > 0) {
+		cin.ignore(10000, '\n'); // 10000자 무시하고 엔터만 찾음
+	}
+	cin.get();
 }
