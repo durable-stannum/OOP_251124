@@ -31,6 +31,8 @@ private:
     static int sessionCount;
     string sessionSummary;
 
+    bool sessionAborted = false;
+
 public:
     // 생성자
     Session(Bank* pBank, Account* pAccount, Interface& ui, ATM* atm, map<string, Bank*>& banks);
@@ -49,6 +51,9 @@ public:
     
     int getWithdrawalCount() const { return withdrawalCount; }
     void increaseWithdrawalCount() { withdrawalCount++; }
+
+    void setSessionAborted(bool status) { sessionAborted = status; }
+    bool isSessionAborted() const { return sessionAborted; }
 
     // [추가] 거래 내역 기록 (ATM에도 전달)
     void recordTransaction(const string& log);
