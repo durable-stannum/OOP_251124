@@ -151,7 +151,7 @@ void ATM::handleAdminSession() {
     case 1:
         cout << "========== Transaction History ==========" << endl;
         // cout << "[Summary]" << endl;
-        cout << "Total called session : " << totalSessionCount << endl;
+        cout << "Total called session : " << totalSessionCount - 1 << endl;
         cout << "Transaction history of ATM :" << endl;
         cout << "=========================================" << endl;
 
