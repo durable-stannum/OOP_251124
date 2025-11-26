@@ -13,13 +13,13 @@ class Initializer; // 전방 선언
 
 class ATM {
 private:
-    int totalSessionCount = 0;
+    int totalSessionCount = 0; // 세션 ID로도 사용
     Bank* pPrimaryBank;
     string serialNumber;
     string type;
     string languageMode;
     CashDenominations availableCash;
-    string atmTransactionHistory;
+    string atmTransactionHistory; // 전체 히스토리 저장
     Initializer* pInit;
     Interface& ui;
 
@@ -32,20 +32,19 @@ public:
     string getSerialNumber() const { return serialNumber; }
     string getType() const { return type; }
     string getLanguageMode() const { return languageMode; }
-    
-    // [수정] const 추가
+
     string getATMTransactionHistory() const { return atmTransactionHistory; }
-    
+
     void setLanguage();
-    bool isAdmin(const string& cardNumberInput); // [수정] const 참조
+    bool isAdmin(const string& cardNumberInput);
     void handleAdminSession();
     bool writeHistoryToFile(const string& historyContent) const;
     bool handleUserSession(const string& cardNumberInput, Bank* cardHoldingBank);
-    bool isSingle() const; // [수정] const 추가
+    bool isSingle() const;
     bool isValid(const string& cardNumberInput, Bank* cardBank) const;
 
-    // [추가] 거래 내역 추가 함수 (Session에서 호출)
-    void addHistory(const string& log);
+    // [수정] Session 클래스에서 종료 시 호출하는 함수
+    void saveSessionHistory(const string& cardNum, const string& accNum, const string& sessionLogs);
 
     // 입출금
     void addCashToATM(const CashDenominations& deposit);
