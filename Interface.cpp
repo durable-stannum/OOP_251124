@@ -29,7 +29,7 @@ void Interface::addMessages() {
 		"Enter ATM's serial number. (ATM의 고유번호를 입력하세요.)\n"
 		"> ";
 	msgMap["ChooseLanguage"]["Unselected"] = 
-		"Press 1 or 2 to choose one language. [1. English/2. Korean] (언어를 선택하기 위해 1 또는 2를 누르세요. (1. 영어/2. 한국어])\n"
+		"Press 1 or 2 to choose one language. [1. English/2. Korean] (언어를 선택하기 위해 1 또는 2를 누르세요. (1. 영어/2. 한국어)\n"
 		"> ";
 
 	// ATM의 언어가 정해진 후
