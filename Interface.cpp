@@ -207,8 +207,8 @@ void Interface::addMessages() {
 	msgMap["NoCheckInputExit"]["English"] = "No checks entered. Transaction cancelled.\n";
 	msgMap["NoCheckInputExit"]["Korean"] = "입력된 수표가 없습니다. 거래를 취소합니다.\n";
 
-	msgMap["ExceedCheckLimit"]["English"] = "Check limit exceeded (Max 30).\n";
-	msgMap["ExceedCheckLimit"]["Korean"] = "수표 입금 한도(30장)를 초과했습니다.\n";
+	msgMap["ExceedCheckLimit"]["English"] = "Check insertion limit exceeded. You can insert up to 30 sheets.\n";
+	msgMap["ExceedCheckLimit"]["Korean"] = "수표 삽입 제한을 초과했습니다. 수표는 최대 30장까지만 삽입할 수 있습니다.\n";
 
 	msgMap["CheckInsertionConfirm"]["English"] = "Checks inserted successfully.\n";
 	msgMap["CheckInsertionConfirm"]["Korean"] = "수표 투입이 완료되었습니다.\n";
