@@ -90,8 +90,12 @@ void Session::run() {
 
     // 2. 거래 반복
     while (true) {
-        // [수정] cin -> ui.inputInt (스냅샷 대응)
-        // "SessionMenu" 메세지가 "1. 입금 ... > " 형식이므로 inputInt에 바로 전달
+        
+        if (isSessionAborted()) {
+            ui.displayMessage("SessionEnd");
+            break; // ATM::run()으로 복귀
+        }
+  
         int transactionNumberInput = ui.inputInt("SessionMenu");
 
         // [추가] 종료 조건 (예: 4번이나 0번 입력 시 세션 종료)
