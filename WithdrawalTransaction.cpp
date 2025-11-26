@@ -121,15 +121,14 @@ void WithdrawalTransaction::run() {
             break; 
         }
 
-        // 3회 도달 체크
-        if (pSession->getWithdrawalCount() >= 3) {
-            ui.displayErrorMessage("MaxWithdrawalLimitReached");
-            pSession->setSessionAborted(true);
-            
-            ui.displayMessage("ReturningToMenu"); 
-            ui.wait();
-            return;
-        }
+    // 3회 도달 체크 (3회째 출금 성공 직후)
+    if (pSession->getWithdrawalCount() == 3) {
+
+        ui.displayErrorMessage("MaxWithdrawalLimitReached"); // 횟수 제한 도달 안내
+        ui.displayMessage("ReturningToMenu"); 
+        ui.wait();
+        return; // Session::run()으로 복귀
+    }
 
         // 추가 출금 의사 묻기
         int choice = ui.inputInt("AskAdditionalWithdrawal");
