@@ -15,7 +15,7 @@ TransferTransaction::TransferTransaction(Session* session) : Transaction(session
 Account* TransferTransaction::findDestinationAccount(const string& destAccNum) {
     // Session을 통해 전체 은행 맵 접근
     map<string, Bank*>& allBanks = pSession->getAllBanks();
-    
+
     for (auto const& [bankName, bankPtr] : allBanks) {
         // Bank::findAccount는 해당 은행에 계좌가 없으면 nullptr 반환
         Account* found = bankPtr->findAccount(destAccNum);
@@ -37,35 +37,35 @@ void TransferTransaction::processCashTransfer(long fee, Account* destAccount) {
     // 현금 장수 입력 (스냅샷 지원 inputInt 사용)
     int cnt50k = ui.inputInt("Input50kCount");
     int cnt10k = ui.inputInt("Input10kCount");
-    int cnt5k  = ui.inputInt("Input5kCount");
-    int cnt1k  = ui.inputInt("Input1kCount");
+    int cnt5k = ui.inputInt("Input5kCount");
+    int cnt1k = ui.inputInt("Input1kCount");
 
     int totalBills = cnt50k + cnt10k + cnt5k + cnt1k;
 
     // [REQ] 최대 50장 제한
-    if (totalBills > 50) { 
-        ui.displayErrorMessage("ExceedCashLimit"); 
-        return; 
+    if (totalBills > 50) {
+        ui.displayErrorMessage("ExceedCashLimit");
+        return;
     }
-    if (totalBills == 0) { 
-        ui.displayMessage("TransactionCancelled"); 
-        return; 
+    if (totalBills == 0) {
+        ui.displayMessage("TransactionCancelled");
+        return;
     }
 
-    long transferAmount = (long)cnt50k * 50000 + (long)cnt10k * 10000 + 
-                          (long)cnt5k * 5000 + (long)cnt1k * 1000;
+    long transferAmount = (long)cnt50k * 50000 + (long)cnt10k * 10000 +
+        (long)cnt5k * 5000 + (long)cnt1k * 1000;
 
     // 수수료 징수 (현금으로 따로 받음)
-    CashDenominations feeCash = {0, 0, 0, 0};
+    CashDenominations feeCash = { 0, 0, 0, 0 };
     if (!collectFee(fee, feeCash)) { return; }
 
     // ATM 내부 시재 증가 (송금액 + 수수료)
-    CashDenominations transferCash = {cnt50k, cnt10k, cnt5k, cnt1k};
+    CashDenominations transferCash = { cnt50k, cnt10k, cnt5k, cnt1k };
     CashDenominations totalToATM;
     totalToATM.c50k = transferCash.c50k + feeCash.c50k;
     totalToATM.c10k = transferCash.c10k + feeCash.c10k;
-    totalToATM.c5k  = transferCash.c5k  + feeCash.c5k;
-    totalToATM.c1k  = transferCash.c1k  + feeCash.c1k;
+    totalToATM.c5k = transferCash.c5k + feeCash.c5k;
+    totalToATM.c1k = transferCash.c1k + feeCash.c1k;
 
     atm->addCashToATM(totalToATM);
 
@@ -73,16 +73,16 @@ void TransferTransaction::processCashTransfer(long fee, Account* destAccount) {
     if (destAccount->addFunds(transferAmount)) {
         // 로그 기록
         string summary = "[TransactionID: " + to_string(transactionID) + "] Cash Transfer " +
-                 to_string(transferAmount) + "KRW from " + 
-                 pSession->getAccount()->getAccountNumber() + // [추가] 보낸 사람(카드 주인) 기록
-                 " to " + destAccount->getAccountNumber() + 
-                 " (Fee: " + to_string(fee) + ")";
+            to_string(transferAmount) + "KRW from " +
+            pSession->getAccount()->getAccountNumber() + // [추가] 보낸 사람(카드 주인) 기록
+            " to " + destAccount->getAccountNumber() +
+            " (Fee: " + to_string(fee) + ")";
         pSession->recordTransaction(summary);
         // 세션 요약 기록
         pSession->recordSessionSummary(pSession->getAccount()->getAccountNumber(), pSession->getAccount()->getCardNumber(), "Cash Transfer", transferAmount);
-        
+
         ui.displayMessage("TransferSuccess");
-        
+
         // 결과 출력
         ui.displayMessage("TransferAmountLabel");
         cout << transferAmount;
@@ -96,7 +96,8 @@ void TransferTransaction::processCashTransfer(long fee, Account* destAccount) {
 
         ui.displayMessage("ReceiverLabel");
         cout << destAccount->getUserName() << endl;
-    } else {
+    }
+    else {
         ui.displayErrorMessage("TransactionFailed");
     }
     ui.wait();
@@ -110,16 +111,16 @@ void TransferTransaction::processAccountTransfer(long fee, Account* destAccount)
     // 이체 금액 입력
     long amount = ui.inputInt("TransferAmountPrompt");
 
-    if (amount == 0) { 
-        ui.displayMessage("TransactionCancelled"); 
-        return; 
+    if (amount == 0) {
+        ui.displayMessage("TransactionCancelled");
+        return;
     }
 
     // [REQ] 내 계좌에서 금액 + 수수료 차감
     long totalDeduction = amount + fee;
-    
+
     if (sourceAccount->getBalance() < totalDeduction) {
-        ui.displayErrorMessage("InsufficientBalance"); 
+        ui.displayErrorMessage("InsufficientBalance");
         return;
     }
 
@@ -131,16 +132,16 @@ void TransferTransaction::processAccountTransfer(long fee, Account* destAccount)
         // 로그 기록
         // (수정된 코드) sourceAccount->getAccountNumber()를 사용하여 보낸 계좌 추가
         string summary = "[TransactionID: " + to_string(transactionID) + "] Account Transfer " +
-                 to_string(amount) + "KRW from " + 
-                 sourceAccount->getAccountNumber() + // [추가된 부분]
-                 " to " + destAccount->getAccountNumber() + 
-                 " (Fee: " + to_string(fee) + ")";
+            to_string(amount) + "KRW from " +
+            sourceAccount->getAccountNumber() + // [추가된 부분]
+            " to " + destAccount->getAccountNumber() +
+            " (Fee: " + to_string(fee) + ")";
         pSession->recordTransaction(summary);
         // 세션 요약 기록
         pSession->recordSessionSummary(pSession->getAccount()->getAccountNumber(), pSession->getAccount()->getCardNumber(), "Account Transfer", amount);
 
         ui.displayMessage("TransferSuccess");
-        
+
         ui.displayMessage("TransferAmountLabel");
         cout << amount;
         ui.displayMessage("WonUnit");
@@ -155,28 +156,29 @@ void TransferTransaction::processAccountTransfer(long fee, Account* destAccount)
         cout << sourceAccount->getBalance(); // 잔액 확인
         ui.displayMessage("WonUnit");
         cout << endl;
-    } else {
+    }
+    else {
         ui.displayErrorMessage("TransactionFailed");
     }
     ui.wait();
 }
 
 void TransferTransaction::run() {
-    Interface& ui = pSession->getUI(); 
+    Interface& ui = pSession->getUI();
     Account* myAccount = pSession->getAccount(); // 내 계좌 (현금 송금 시에는 사용 안 할 수도 있음)
 
     while (true) {
         // 1. 송금 방식 선택 (1: 현금, 2: 계좌)
-        int choice = ui.inputInt("TransferOptionMenu"); 
-        
-        if (choice == 0) { 
+        int choice = ui.inputInt("TransferOptionMenu");
+
+        if (choice == 0) {
             ui.displayMessage("TransactionCancelled");
-            return; 
+            return;
         }
-        
-        if (choice != 1 && choice != 2) { 
-            ui.displayErrorMessage("InvalidSelection"); 
-            continue; 
+
+        if (choice != 1 && choice != 2) {
+            ui.displayErrorMessage("InvalidSelection");
+            continue;
         }
 
         string destAccNum;
@@ -190,37 +192,42 @@ void TransferTransaction::run() {
             break;
         }
 
-        if (destAccNum == "0" || destAccNum == "Back") { 
+        if (destAccNum == "0" || destAccNum == "Back") {
             ui.displayMessage("TransactionCancelled");
-            return; 
+            return;
         }
 
         // 자가 이체 방지 (계좌 이체의 경우)
         if (choice == 2 && destAccNum == myAccount->getAccountNumber()) {
-             ui.displayMessage("TransferToSelfError"); 
-             continue; 
+            ui.displayMessage("TransferToSelfError");
+            continue;
         }
 
         // 목적지 계좌 존재 확인
         Account* destAccount = findDestinationAccount(destAccNum);
         if (destAccount == nullptr) {
-            ui.displayMessage("InvalidAccount"); 
-            continue; 
+            ui.displayMessage("InvalidAccount");
+            continue;
         }
 
         // 3. 실제 이체 프로세스 시작
+        // [수정] 거래 실행 직전 새 ID 발급
+        transactionID = nextID++;
+
         if (choice == 1) {
             // 현금 송금: 타행 여부 상관없이 수수료 고정 (REQ 1.8: Cash transfer fee to any bank type: 2000)
             // destAccount 정보는 필요하지만, 수수료 계산에는 '내 은행' 정보가 필요 없음
             long fee = calculateFee(TransactionType::CASH_TRANSFER);
             processCashTransfer(fee, destAccount);
-        } else {
+        }
+        else {
             // 계좌 이체: 상대 은행 이름 필요 -> 수수료 계산에 사용
             long fee = calculateFee(TransactionType::TRANSFER, destAccount->getBankName());
             processAccountTransfer(fee, destAccount);
         }
-        
+
         // 거래 완료 후 루프 탈출
-        break; 
+        break;
     }
 }
+
