@@ -106,6 +106,9 @@ void Initializer::run() {
             ui.displayMessage("EnterATMSerialNumber");
 
             string serialNumberInput = ui.inputString(""); // 여기서 -1 입력 시 예외
+            if (serialNumberInput.empty()) {
+            continue; // ATM 선택 로직을 건너뛰고 MainMenu를 다시 출력
+            }
 
             ATM* selectedATM = findATMBySerialNumber(serialNumberInput);
             if (selectedATM != nullptr) {
