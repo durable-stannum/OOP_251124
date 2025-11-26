@@ -74,7 +74,18 @@ void ATM::run() {
         // 5. 세션 실행 (비밀번호 입력 파트로 진입)
         session->run();
 
-        // 6. 세션 종료 및 정리
+        // 6. 세션 강제 종료 조건 검사
+		if (session->isSessionAborted()) {
+
+			delete session;
+
+			language = "Unselected";
+			ui.displayMessage("SessionEnd");
+			return;
+		}
+
+
+		//세션 정상 종료
         delete session;
         ui.displayMessage("GoBackToEnteringCardNumber");
 	}
