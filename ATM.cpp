@@ -27,8 +27,14 @@ void ATM::run() {
     // [수정] 카드 번호 입력 단계에서의 예외 처리
     string cardNumberInput;
     try {
-        ui.displayMessage("EnterCardNumber");
-        cardNumberInput = ui.inputString("");
+        while (true) {
+            ui.displayMessage("EnterCardNumber");
+            cardNumberInput = ui.inputString("");
+            if (cardNumberInput.empty()) {
+                continue;
+            }
+            break;
+        }
     }
     catch (const Interface::SessionAbortException&) {
         // -1 입력 시 언어 설정 초기화 후 종료 (메인 메뉴로 복귀)
