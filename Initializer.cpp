@@ -101,19 +101,24 @@ Initializer::~Initializer() {
 void Initializer::run() {
     ui.addMainMenu(allATMs);
     while (true) {
-        ui.displayMessage("MainMenu");
-        ui.displayMessage("EnterATMSerialNumber");
+        try {
+            ui.displayMessage("MainMenu");
+            ui.displayMessage("EnterATMSerialNumber");
 
-        // [수정] cin -> ui.inputString (스냅샷 대응)
-        string serialNumberInput = ui.inputString("");
+            string serialNumberInput = ui.inputString(""); // 여기서 -1 입력 시 예외
 
-        ATM* selectedATM = findATMBySerialNumber(serialNumberInput);
-        if (selectedATM != nullptr) {
-            selectedATM->run();
+            ATM* selectedATM = findATMBySerialNumber(serialNumberInput);
+            if (selectedATM != nullptr) {
+                selectedATM->run();
+            }
+            else {
+                cout << "Invalid Serial Number." << endl;
+            }
         }
-        else {
-            // 잘못된 시리얼 번호 처리 (메세지 출력 등)
-            cout << "Invalid Serial Number." << endl;
+        catch (const Interface::SessionAbortException&) {
+            // 메인 메뉴에서 -1 입력 시 그냥 입력을 취소하고 메뉴 다시 출력
+            cout << "\nInput cancelled.\n";
+            continue;
         }
     }
 }
@@ -190,4 +195,5 @@ void Initializer::printSnapshot() {
     }
     cout << "========================================================" << endl;
 }
+
 
