@@ -79,7 +79,21 @@ void ATM::run() {
     // 5. 세션 실행 (비밀번호 입력 파트로 진입)
     session->run();
 
+
+    if (session->isSessionAborted()) {
+            // 출금 3회 초과 등 강제 종료 신호가 발생했을 경우 (Session::run()이 break로 복귀함)
+            
+            delete session;
+            
+            language = originalLanguage; // 언어 복구 (MainMenu 출력 가능하도록)
+            ui.displayMessage("SessionEnd");
+            
+            // ATM을 비활성화하고 Initializer로 돌아가 ATM 고유번호 입력창(MainMenu)으로 이동
+            return; 
+        }
     // 6. 세션 종료 및 정리
+
+    
     delete session;
 
     // [수정] 카드 삽입 단계로 돌아가는 것이 아니라 메인 메뉴로 돌아가므로 메세지 제거 혹은 변경
