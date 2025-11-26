@@ -466,8 +466,10 @@ string Interface::inputString(string msgKey) {
 
 		// 3. 스냅샷 체크
 		if (input == "/") {
-			if (globalInitializer != nullptr) globalInitializer->printSnapshot();
-			continue;
+			if (globalInitializer != nullptr) {
+			globalInitializer->printSnapshot();
+			}
+			return "";
 		}
 
 		// 빈 문자열이 아닌 경우 (유효성 검사는 ATM에서 처리)
