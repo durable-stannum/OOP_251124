@@ -85,7 +85,7 @@ void ATM::run() {
             
             delete session;
             
-            language = originalLanguage; // 언어 복구 (MainMenu 출력 가능하도록)
+            language = "Unselected"; // 언어 복구 (MainMenu 출력 가능하도록)
             ui.displayMessage("SessionEnd");
             
             // ATM을 비활성화하고 Initializer로 돌아가 ATM 고유번호 입력창(MainMenu)으로 이동
@@ -263,4 +263,3 @@ bool ATM::dispenseCash(long amount) {
         return false;
     }
 }
-
