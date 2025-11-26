@@ -17,13 +17,14 @@ private:
     Bank* pBank;
     Account* pAccount;
     Interface& ui;
-    ATM* pATM; 
-    
+    ATM* pATM;
+
     // [수정] Bank* 맵 참조 저장 (TransferTransaction에서 사용)
-    map<string, Bank*>& allBanks; 
-    
+    map<string, Bank*>& allBanks;
+
     int withdrawalCount;
-    vector<string> historyLog;
+    // vector<string> historyLog; // 기존 벡터 방식 대신 string 버퍼 사용
+    string sessionHistoryBuffer;  // [추가] 현재 세션의 거래 내역을 모아두는 버퍼
 
     Transaction* deposit;
     Transaction* withdrawal;
@@ -36,7 +37,7 @@ private:
 public:
     // 생성자
     Session(Bank* pBank, Account* pAccount, Interface& ui, ATM* atm, map<string, Bank*>& banks);
-    
+
     // [수정] 소멸자 (구현 필수)
     ~Session();
 
@@ -48,15 +49,16 @@ public:
     Account* getAccount() { return pAccount; }
     ATM* getATM() { return pATM; }
     map<string, Bank*>& getAllBanks() { return allBanks; }
-    
+
     int getWithdrawalCount() const { return withdrawalCount; }
     void increaseWithdrawalCount() { withdrawalCount++; }
 
     void setSessionAborted(bool status) { sessionAborted = status; }
     bool isSessionAborted() const { return sessionAborted; }
 
-    // [추가] 거래 내역 기록 (ATM에도 전달)
+    // [수정] 거래 내역 기록 (버퍼에 저장)
     void recordTransaction(const string& log);
+
     // 세션 요약 기록
     void recordSessionSummary(string accountNumberInput, string cardNumberInput, string transactionTypeInput, int amountInput);
 };
