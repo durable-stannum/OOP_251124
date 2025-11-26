@@ -179,12 +179,16 @@ void TransferTransaction::run() {
             continue; 
         }
 
-        // 2. 목적지 계좌번호 입력
-        ui.displayMessage("AccountNumPrompt");
-        
-        // [수정] cin -> ui.inputString 사용 (스냅샷 REQ 10.1 대응)
-        // 빈 문자열("")을 넘겨서 메세지 중복 출력 방지
-        string destAccNum = ui.inputString("");
+        string destAccNum;
+        while (true) {
+            // 2. 목적지 계좌번호 입력
+            ui.displayMessage("AccountNumPrompt");
+            destAccNum = ui.inputString("");
+            if (destAccNum.empty()) {
+                continue;
+            }
+            break;
+        }
 
         if (destAccNum == "0" || destAccNum == "Back") { 
             ui.displayMessage("TransactionCancelled");
