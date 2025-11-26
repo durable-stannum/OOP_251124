@@ -101,6 +101,9 @@ void WithdrawalTransaction::run() {
     // [REQ 5.6] 세션 당 최대 3회 출금 제한 (진입 전 체크)
     if (pSession->getWithdrawalCount() >= 3) {
         ui.displayErrorMessage("MaxWithdrawalLimitReached");
+
+        pSession->setSessionAborted(true);
+
         ui.displayMessage("ReturningToMenu");
         ui.wait();
         return;
@@ -121,6 +124,8 @@ void WithdrawalTransaction::run() {
         // 3회 도달 체크
         if (pSession->getWithdrawalCount() >= 3) {
             ui.displayErrorMessage("MaxWithdrawalLimitReached");
+            pSession->setSessionAborted(true);
+            
             ui.displayMessage("ReturningToMenu"); 
             ui.wait();
             return;
