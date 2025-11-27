@@ -46,6 +46,7 @@ void ATM::run() {
 
     // [수정] Admin 여부와 상관없이 카드 입력 시 즉시 세션 카운트 증가
     totalSessionCount++;
+    ui.displayMessage("SessionStart");
 
     if (isAdmin(cardNumberInput)) {
         try {
@@ -78,8 +79,6 @@ void ATM::run() {
         language = "Unselected";
         return;
     }
-
-    ui.displayMessage("SessionStart");
 
     Session* session = new Session(
         cardHoldingBank,
