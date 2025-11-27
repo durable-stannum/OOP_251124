@@ -32,6 +32,7 @@ void Interface::addMessages() {
 	msgMap["ChooseLanguage"]["Unselected"] =
 		"Press 1 or 2 to choose one language. [1. English/2. Korean] (언어를 선택하기 위해 1 또는 2를 누르세요. (1. 영어/2. 한국어)\n"
 		"> ";
+	msgMap["InvalidSelection"]["Unselected"] = "Invalid number. (유효하지 않은 번호입니다.)\n";
 
 	// ATM의 언어가 정해진 후
 	msgMap["EnterCardNumber"]["English"] =
