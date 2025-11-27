@@ -3,6 +3,7 @@
 #include "ATM.h"
 #include "Account.h"
 #include "Interface.h"
+#include "CashDenominations.h"
 #include <iostream>
 
 using namespace std;
@@ -44,8 +45,9 @@ bool WithdrawalTransaction::processSingleWithdrawal() {
         ui.displayErrorMessage("InsufficientBalance");
         return false;
     }
+    CashDenominations dispensedCash;
 
-    if (!atm->dispenseCash(amount)) {
+    if (!atm->dispenseCash(amount, dispensedCash)) {
         ui.displayErrorMessage("InsufficientATMCash");
         return false;
     }
@@ -60,6 +62,8 @@ bool WithdrawalTransaction::processSingleWithdrawal() {
         pSession->recordSessionSummary(pSession->getAccount()->getAccountNumber(), pSession->getAccount()->getCardNumber(), "Withdrawal", amount);
 
         ui.displayMessage("WithdrawalSuccess");
+
+        ui.displayDispensedCash(dispensedCash);
 
         ui.displayMessage("WithdrawalAmountLabel");
         cout << amount;
