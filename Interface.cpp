@@ -94,8 +94,8 @@ void Interface::addMessages() {
 	msgMap["WrongCardPW"]["English"] = "Wrong password\n";
 	msgMap["WrongCardPW"]["Korean"] = "잘못된 비밀번호\n";
 
-	msgMap["PwIncorrect3Times"]["English"] = "Incorrect password entered three times in a row.\n";
-	msgMap["PwIncorrect3Times"]["Korean"] = "비밀번호가 3번 연속으로 잘못 입력되었습니다.\n";
+	msgMap["PwIncorrect3Times"]["English"] = "Incorrect password entered three times in a row. Please take your card.\n";
+	msgMap["PwIncorrect3Times"]["Korean"] = "비밀번호가 3번 연속으로 잘못 입력되었습니다. 카드를 받아주세요.\n";
 
 	msgMap["SessionMenu"]["English"] =
 		"======================================================================================================\n"
