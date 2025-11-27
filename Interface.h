@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "CashDenominations.h"
 
 using namespace std;
 
@@ -32,6 +33,7 @@ public:
 	string inputString(string msgKey);
 
 	void totalCheckInfo(int amount, int count);
+	void displayDispensedCash(const CashDenominations& cash);
 	void wait();
 };
 
