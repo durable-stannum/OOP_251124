@@ -48,8 +48,8 @@ void Interface::addMessages() {
 	msgMap["CheckValidity"]["English"] = "Checking card validity... ";
 	msgMap["CheckValidity"]["Korean"] = "카드 유효성 확인 중... ";
 
-	msgMap["IsNotValid"]["English"] = "Card is not accepted. Please take your card.\n";
-	msgMap["IsNotValid"]["Korean"] = "카드 사용 불가. 카드를 받아주세요.\n";
+	msgMap["IsNotValid"]["English"] = "Card is not accepted.\n";
+	msgMap["IsNotValid"]["Korean"] = "카드 사용 불가.\n";
 
 	msgMap["IsValid"]["English"] = "Card accepted\n";
 	msgMap["IsValid"]["Korean"] = "카드 사용 가능\n";
