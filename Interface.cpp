@@ -5,6 +5,7 @@
 #include "main.h"
 #include "ATM.h"
 #include "Initializer.h"
+#include "CashDenominations.h"
 #include <limits>
 using namespace std;
 
@@ -470,7 +471,7 @@ string Interface::inputString(string msgKey) {
 		// 3. 스냅샷 체크
 		if (input == "/") {
 			if (globalInitializer != nullptr) {
-			globalInitializer->printSnapshot();
+				globalInitializer->printSnapshot();
 			}
 			return "";
 		}
@@ -490,6 +491,26 @@ void Interface::totalCheckInfo(int amount, int count) {
 	else if (language == "Korean") {
 		cout << "현재 총액: " << amount << "원 (" << count << "장)\n";
 	}
+}
+
+
+void Interface::displayDispensedCash(const CashDenominations& cash) {
+	cout << "--------------------------------------------------" << endl;
+	if (language == "Korean") {
+		cout << "[ 출금 명세 ]" << endl;
+		cout << "50000원권 : " << cash.c50k << "장" << endl;
+		cout << "10000원권 : " << cash.c10k << "장" << endl;
+		cout << " 5000원권 : " << cash.c5k << "장" << endl;
+		cout << " 1000원권 : " << cash.c1k << "장" << endl;
+	}
+	else {
+		cout << "[ Dispensed Cash Detail ]" << endl;
+		cout << "50000 KRW : " << cash.c50k << " sheet(s)" << endl;
+		cout << "10000 KRW : " << cash.c10k << " sheet(s)" << endl;
+		cout << " 5000 KRW : " << cash.c5k << " sheet(s)" << endl;
+		cout << " 1000 KRW : " << cash.c1k << " sheet(s)" << endl;
+	}
+	cout << "--------------------------------------------------" << endl;
 }
 
 void Interface::wait() {
