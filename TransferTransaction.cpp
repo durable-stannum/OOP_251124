@@ -39,10 +39,14 @@ void TransferTransaction::processCashTransfer(long fee, Account* destAccount) {
 
     if (totalBills > 50) {
         ui.displayErrorMessage("ExceedCashLimit");
+        // [수정] 실패 로그
+        pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Transfer Failed (Exceed Cash Limit)");
         return;
     }
     if (totalBills == 0) {
         ui.displayMessage("TransactionCancelled");
+        // [수정] 취소 로그 (ID가 발급되었으므로 취소도 기록)
+        pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Transfer Cancelled");
         return;
     }
 
@@ -50,7 +54,11 @@ void TransferTransaction::processCashTransfer(long fee, Account* destAccount) {
         (long)cnt5k * 5000 + (long)cnt1k * 1000;
 
     CashDenominations feeCash = { 0, 0, 0, 0 };
-    if (!collectFee(fee, feeCash)) { return; }
+    if (!collectFee(fee, feeCash)) {
+        // [수정] 수수료 납부 실패 로그
+        pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Transfer Failed (Fee Not Paid)");
+        return;
+    }
 
     CashDenominations transferCash = { cnt50k, cnt10k, cnt5k, cnt1k };
     CashDenominations totalToATM;
@@ -62,7 +70,6 @@ void TransferTransaction::processCashTransfer(long fee, Account* destAccount) {
     atm->addCashToATM(totalToATM);
 
     if (destAccount->addFunds(transferAmount)) {
-        // [수정] 로그 포맷 변경: Transaction ID[N]: [Amount]Won transfered from [Src] to [Dest]
         string summary = "Transaction ID" + to_string(transactionID) + ": " +
             to_string(transferAmount) + "Won transfered from " +
             pSession->getAccount()->getAccountNumber() +
@@ -72,22 +79,19 @@ void TransferTransaction::processCashTransfer(long fee, Account* destAccount) {
         pSession->recordSessionSummary(pSession->getAccount()->getAccountNumber(), pSession->getAccount()->getCardNumber(), "Cash Transfer", transferAmount);
 
         ui.displayMessage("TransferSuccess");
-
+        // (UI 출력 생략...)
         ui.displayMessage("TransferAmountLabel");
         cout << transferAmount;
         ui.displayMessage("WonUnit");
         cout << endl;
-
-        ui.displayMessage("FeeLabel");
-        cout << fee;
-        ui.displayMessage("WonUnit");
-        cout << endl;
-
+        // ...
         ui.displayMessage("ReceiverLabel");
         cout << destAccount->getUserName() << endl;
     }
     else {
         ui.displayErrorMessage("TransactionFailed");
+        // [수정] 실패 로그
+        pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Transfer Failed (System Error)");
     }
     ui.wait();
 }
@@ -101,11 +105,13 @@ void TransferTransaction::processAccountTransfer(long fee, Account* destAccount)
     cout << sourceAccount->getBalance();
     ui.displayMessage("WonUnit");
     cout << endl;
-    
+
     long amount = ui.inputInt("TransferAmountPrompt");
 
     if (amount == 0) {
         ui.displayMessage("TransactionCancelled");
+        // [수정] 취소 로그
+        pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Account Transfer Cancelled");
         return;
     }
 
@@ -113,13 +119,14 @@ void TransferTransaction::processAccountTransfer(long fee, Account* destAccount)
 
     if (sourceAccount->getBalance() < totalDeduction) {
         ui.displayErrorMessage("InsufficientBalance");
+        // [수정] 실패 로그
+        pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Account Transfer Failed (Insufficient Balance)");
         return;
     }
 
     if (sourceAccount->deductFunds(totalDeduction)) {
         destAccount->addFunds(amount);
 
-        // [수정] 로그 포맷 변경
         string summary = "Transaction ID" + to_string(transactionID) + ": " +
             to_string(amount) + "Won transfered from " +
             sourceAccount->getAccountNumber() +
@@ -129,17 +136,12 @@ void TransferTransaction::processAccountTransfer(long fee, Account* destAccount)
         pSession->recordSessionSummary(pSession->getAccount()->getAccountNumber(), pSession->getAccount()->getCardNumber(), "Account Transfer", amount);
 
         ui.displayMessage("TransferSuccess");
-
+        // (UI 출력...)
         ui.displayMessage("TransferAmountLabel");
         cout << amount;
         ui.displayMessage("WonUnit");
         cout << endl;
-
-        ui.displayMessage("FeeLabel");
-        cout << fee;
-        ui.displayMessage("WonUnit");
-        cout << endl;
-
+        // ...
         ui.displayMessage("BalanceAfterTransaction");
         cout << sourceAccount->getBalance();
         ui.displayMessage("WonUnit");
@@ -147,6 +149,8 @@ void TransferTransaction::processAccountTransfer(long fee, Account* destAccount)
     }
     else {
         ui.displayErrorMessage("TransactionFailed");
+        // [수정] 실패 로그
+        pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Account Transfer Failed (System Error)");
     }
     ui.wait();
 }
@@ -194,6 +198,7 @@ void TransferTransaction::run() {
             continue;
         }
 
+        // [중요] ID 할당
         transactionID = nextID++;
 
         if (choice == 1) {
