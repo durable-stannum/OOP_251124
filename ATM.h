@@ -48,7 +48,7 @@ public:
 
     // 입출금
     void addCashToATM(const CashDenominations& deposit);
-    bool dispenseCash(long amount);
+    bool dispenseCash(long amount, CashDenominations& outDispensedCash);
 
     CashDenominations getCash() const { return availableCash; }
 };
