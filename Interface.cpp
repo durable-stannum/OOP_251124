@@ -229,8 +229,8 @@ void Interface::addMessages() {
 	msgMap["FeeNoticePart2"]["Korean"] = "원이 필요합니다.";
 	msgMap["FeePromptPart1"]["English"] = "Please insert ";
 	msgMap["FeePromptPart1"]["Korean"] = "1000원권 ";
-	msgMap["FeePromptPart2"]["English"] = " bill(s) of 1000 KRW for fee.\n> ";
-	msgMap["FeePromptPart2"]["Korean"] = "장을 넣어주세요.\n> ";
+	msgMap["FeePromptPart2"]["English"] = " bill(s) of 1000 KRW for fee.\n";
+	msgMap["FeePromptPart2"]["Korean"] = "장을 넣어주세요.\n";
 	msgMap["InsufficientFee"]["English"] = "Insufficient fee inserted.\n";
 	msgMap["InsufficientFee"]["Korean"] = "수수료가 부족합니다.\n";
 
