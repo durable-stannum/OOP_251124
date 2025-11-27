@@ -175,7 +175,7 @@ void Initializer::printSnapshot() {
             + (long long)cash.c1k * 1000;
 
         // [수정] 권종별 장수와 총액 함께 출력
-        cout << "   Remianing Cash: "
+        cout << "   Remaining Cash: "
             << "50k(" << cash.c50k << ") "
             << "10k(" << cash.c10k << ") "
             << "5k(" << cash.c5k << ") "
