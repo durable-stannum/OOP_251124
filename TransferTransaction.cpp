@@ -97,6 +97,11 @@ void TransferTransaction::processAccountTransfer(long fee, Account* destAccount)
     Interface& ui = pSession->getUI();
     Account* sourceAccount = pSession->getAccount();
 
+    ui.displayMessage("CurrentBalance");
+    cout << sourceAccount->getBalance();
+    ui.displayMessage("WonUnit");
+    cout << endl;
+    
     long amount = ui.inputInt("TransferAmountPrompt");
 
     if (amount == 0) {
