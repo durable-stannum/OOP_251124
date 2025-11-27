@@ -94,8 +94,8 @@ void Interface::addMessages() {
 	msgMap["WrongCardPW"]["English"] = "Wrong password\n";
 	msgMap["WrongCardPW"]["Korean"] = "잘못된 비밀번호\n";
 
-	msgMap["PwIncorrect3Times"]["English"] = "Incorrect password entered three times in a row. Please take your card.\n";
-	msgMap["PwIncorrect3Times"]["Korean"] = "비밀번호가 3번 연속으로 잘못 입력되었습니다. 카드를 받아주세요.\n";
+	msgMap["PwIncorrect3Times"]["English"] = "Incorrect password entered three times in a row.\n";
+	msgMap["PwIncorrect3Times"]["Korean"] = "비밀번호가 3번 연속으로 잘못 입력되었습니다.\n";
 
 	msgMap["SessionMenu"]["English"] =
 		"======================================================================================================\n"
@@ -119,8 +119,8 @@ void Interface::addMessages() {
 	msgMap["InvalidSelection"]["English"] = "Invalid number.\n";
 	msgMap["InvalidSelection"]["Korean"] = "유효하지 않은 번호입니다.\n";
 
-	msgMap["SessionEnd"]["English"] = "Session is ended.\n";
-	msgMap["SessionEnd"]["Korean"] = "세션이 종료되었습니다.\n";
+	msgMap["SessionEnd"]["English"] = "Session is ended.\nPlease take your card.\n";
+	msgMap["SessionEnd"]["Korean"] = "세션이 종료되었습니다.\n카드를 받아주세요.\n";
 
 	msgMap["GoBackToEnteringCardNumber"]["English"] = "Returning to the card insertion and card number entry step.\n";
 	msgMap["GoBackToEnteringCardNumber"]["Korean"] = "새로운 세션인 카드 삽입 및 카드 번호 입력 단계로 돌아갑니다.\n";
