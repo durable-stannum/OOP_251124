@@ -136,6 +136,7 @@ void Session::run() {
     }
     catch (const Interface::SessionAbortException&) {
         ui.displayMessage("SessionEnd");
+        if (sessionCount != 0) cout << sessionSummary;
         return;
     }
 }
