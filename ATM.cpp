@@ -103,14 +103,22 @@ void ATM::run() {
 
 void ATM::setLanguage() {
     if (this->getLanguageMode() == "Bilingual") {
-        ui.displayMessage("ChooseLanguage");
-        string langChoice = ui.inputString("");
+        while (true) {
+            ui.displayMessage("ChooseLanguage");
+            string langChoice = ui.inputString("");
 
-        if (langChoice == "2" || langChoice == "Korean" || langChoice == "한국어") {
-            language = "Korean";
-        }
-        else {
-            language = "English";
+            if (langChoice == "1" || langChoice == "English" || langChoice == "영어") {
+                    language = "English";
+                    break;
+                }
+            else if (langChoice == "2" || langChoice == "Korean" || langChoice == "한국어") {
+                language = "Korean";
+                break;
+            }
+            else {
+                ui.displayErrorMessage("InvalidSelection");
+                continue;
+            }
         }
     }
     else {
