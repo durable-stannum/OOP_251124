@@ -132,11 +132,7 @@ void Session::run() {
         }
 
         // 세션 요약 출력
-        if (sessionCount == 0) {
-            cout << "\n========== [Session Summary] ==========\n" << "No sessions were conducted." << endl;
-        }
-        else cout << sessionSummary;
-
+        if (sessionCount != 0) cout << sessionSummary;
     }
     catch (const Interface::SessionAbortException&) {
         ui.displayMessage("SessionEnd");
