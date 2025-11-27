@@ -228,7 +228,7 @@ void ATM::addCashToATM(const CashDenominations& deposit) {
     availableCash.c1k += deposit.c1k;
 }
 
-bool ATM::dispenseCash(long amount) {
+bool ATM::dispenseCash(long amount, CashDenominations& outDispensedCash) {
     CashDenominations tempCash = availableCash;
     long remainingAmount = amount;
 
@@ -245,10 +245,18 @@ bool ATM::dispenseCash(long amount) {
     remainingAmount -= (long)count1k * 1000;
 
     if (remainingAmount == 0) {
+        // 실제 ATM 시재 차감
         availableCash.c50k -= count50k;
         availableCash.c10k -= count10k;
         availableCash.c5k -= count5k;
         availableCash.c1k -= count1k;
+
+        // [추가] 출금된 권종 정보를 호출자에게 전달
+        outDispensedCash.c50k = count50k;
+        outDispensedCash.c10k = count10k;
+        outDispensedCash.c5k = count5k;
+        outDispensedCash.c1k = count1k;
+
         return true;
     }
     else {
