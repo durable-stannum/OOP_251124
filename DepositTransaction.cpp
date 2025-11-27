@@ -24,13 +24,11 @@ void DepositTransaction::processCashDeposit(long fee) {
 
     if (totalBills > 50) {
         ui.displayErrorMessage("ExceedCashLimit");
-        // [수정] 실패 로그
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Deposit Failed (Exceed Cash Limit)");
         return;
     }
     if (totalBills == 0) {
         ui.displayErrorMessage("NoCashInserted");
-        // [수정] 실패 로그
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Deposit Failed (No Cash Inserted)");
         return;
     }
@@ -40,7 +38,6 @@ void DepositTransaction::processCashDeposit(long fee) {
 
     CashDenominations feeCash = { 0, 0, 0, 0 };
     if (!collectFee(fee, feeCash)) {
-        // [수정] 실패 로그
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Deposit Failed (Fee Not Paid)");
         return;
     }
@@ -62,11 +59,19 @@ void DepositTransaction::processCashDeposit(long fee) {
         pSession->recordSessionSummary(pSession->getAccount()->getAccountNumber(), pSession->getAccount()->getCardNumber(), "Cash Deposit", depositAmount);
 
         ui.displayMessage("DepositSuccess");
-        // (UI 출력...)
+
+        ui.displayMessage("DepositAmountLabel");
+        cout << depositAmount;
+        ui.displayMessage("WonUnit");
+        cout << endl;
+
+        ui.displayMessage("FeeLabel");
+        cout << fee;
+        ui.displayMessage("WonUnit");
+        cout << endl;
     }
     else {
         ui.displayErrorMessage("DepositFailed");
-        // [수정] 실패 로그
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Deposit Failed (System Error)");
     }
     ui.wait();
@@ -88,32 +93,51 @@ void DepositTransaction::processCheckDeposit(long fee) {
         long amount = ui.inputCheckAmount("PromptCheckAmountLoop");
         if (amount == 0) break;
 
-        // ... (중간 생략: 수표 유효성 검사 등) ...
+        if (amount < 100000) {
+            ui.displayErrorMessage("InvalidCheckAmount");
+            continue;
+        }
 
-        // 만약 중간에 취소되거나 에러로 리턴된다면 로그 추가 필요할 수 있음
-        // 현재 로직상 루프 내에서 continue만 하므로 최종 집계로 이동
-        // 단, ExceedCheckLimit일 경우 return하므로 처리 필요
+        int count = ui.inputInt("PromptCheckCount");
+        if (count <= 0) {
+            ui.displayErrorMessage("InvalidInput_Negative");
+            continue;
+        }
+
+        totalCheckAmount += (amount * count);
+        totalCheckCount += count;
+
+        ui.totalCheckInfo((int)totalCheckAmount, totalCheckCount);
+
         if (totalCheckCount > 30) {
             ui.displayErrorMessage("ExceedCheckLimit");
-            // [수정] 실패 로그 (ID는 run에서 이미 발급됨)
             pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Check Deposit Failed (Exceed Check Limit)");
             return;
         }
-        // ...
     }
 
     if (totalCheckCount == 0) {
         ui.displayErrorMessage("NoCheckInputExit");
-        // [수정] 실패 로그
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Check Deposit Cancelled");
         return;
     }
 
-    // ... (UI 출력) ...
+    cout << "---------------------------------" << endl;
+    ui.displayMessage("FinalCheckTotalAmount");
+    cout << totalCheckAmount;
+    ui.displayMessage("WonUnit");
+    cout << endl;
+
+    ui.displayMessage("FinalCheckTotalCount");
+    cout << totalCheckCount;
+    ui.displayMessage("SheetUnit");
+    cout << endl;
+
+    ui.displayMessage("FinalCheckDepositConfirm");
+    cout << "---------------------------------" << endl;
 
     CashDenominations feeCash = { 0, 0, 0, 0 };
     if (!collectFee(fee, feeCash)) {
-        // [수정] 실패 로그
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Check Deposit Failed (Fee Not Paid)");
         return;
     }
@@ -125,16 +149,21 @@ void DepositTransaction::processCheckDeposit(long fee) {
             to_string(totalCheckAmount) + "Won (Check) added to " + account->getAccountNumber();
 
         pSession->recordTransaction(summaryLog);
+
         ui.displayMessage("CheckDepositSuccess");
-        // ...
+
+        ui.displayMessage("TotalDepositAmountLabel");
+        cout << totalCheckAmount;
+        ui.displayMessage("WonUnit");
+        cout << endl;
     }
     else {
         ui.displayErrorMessage("DepositFailed");
-        // [수정] 실패 로그
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Check Deposit Failed (System Error)");
     }
     ui.wait();
 }
+
 
 void DepositTransaction::run() {
     Interface& ui = pSession->getUI();
@@ -151,7 +180,7 @@ void DepositTransaction::run() {
         return;
     }
 
-    // [중요] ID 할당
+    // [중요] 여기서 ID가 발급됨
     transactionID = nextID++;
 
     long fee = calculateFee(TransactionType::DEPOSIT);
