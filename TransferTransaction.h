@@ -10,10 +10,10 @@ private:
     // 목적지 계좌 찾기 (전체 은행 검색)
     Account* findDestinationAccount(const string& destAccNum);
     
-    // 1. 현금 송금 (Cash Transfer)
+    //현금 송금
     void processCashTransfer(long fee, Account* destAccount);
     
-    // 2. 계좌 이체 (Account Transfer)
+    //계좌 이체
     void processAccountTransfer(long fee, Account* destAccount);
 
 public:
