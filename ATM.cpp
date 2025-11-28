@@ -1,7 +1,7 @@
 #include "ATM.h"
 #include <iostream>
 #include <algorithm>
-#include <fstream> // ofstream 사용을 위해 필요
+#include <fstream> // ofstream 사용
 #include <sstream> // stringstream 사용
 #include "Interface.h"
 #include "main.h" // 전역 language 변수 사용
@@ -44,7 +44,7 @@ void ATM::run() {
         return;
     }
 
-    // [수정] Admin 여부와 상관없이 카드 입력 시 즉시 세션 카운트 증가
+    //카드 입력 시 즉시 세션 카운트 증가
     totalSessionCount++;
     ui.displayMessage("SessionStart");
 
@@ -56,7 +56,7 @@ void ATM::run() {
             ui.displayMessage("SessionEnd");
         }
 
-        // [추가] Admin 세션이 끝난 후 이력을 저장 (현재 조회 시에는 안 뜨고, 다음 조회부터 뜸)
+        //Admin 세션이 끝난 후 이력을 저장 (현재 조회 시에는 안 뜨고, 다음 조회부터 뜸)
         // AccNum 자리에는 "Administrator", 로그에는 "Admin access" 기록
         saveSessionHistory(cardNumberInput, "Administrator", "Admin access");
 
@@ -133,15 +133,14 @@ bool ATM::isAdmin(const string& cardNumberInput) {
     return cardNumberInput == targetAdminNum;
 }
 
-// [수정] 단순 문자열 추가가 아니라, 세션 정보를 포맷팅해서 저장
+//단순 문자열 추가가 아니라, 세션 정보를 포맷팅해서 저장
 void ATM::saveSessionHistory(const string& cardNum, const string& accNum, const string& sessionLogs) {
     stringstream ss;
 
-    // [REQ Format Implementation]
     ss << "Session : " << totalSessionCount << endl;
     ss << "Card number: " << cardNum << endl;
     ss << accNum << "'s transaction history" << endl;
-    ss << sessionLogs; // transaction logs (이미 개행 포함됨)
+    ss << sessionLogs;
 
     if (!atmTransactionHistory.empty()) {
         atmTransactionHistory += "\n";
@@ -157,7 +156,6 @@ void ATM::handleAdminSession() {
     switch (choice) {
     case 1:
         cout << "========== Transaction History ==========" << endl;
-        // cout << "[Summary]" << endl;
         cout << "Total called session : " << totalSessionCount - 1 << endl;
         cout << "Transaction history of ATM :" << endl;
         cout << "=========================================" << endl;
@@ -252,13 +250,11 @@ bool ATM::dispenseCash(long amount, CashDenominations& outDispensedCash) {
     remainingAmount -= (long)count1k * 1000;
 
     if (remainingAmount == 0) {
-        // 실제 ATM 시재 차감
         availableCash.c50k -= count50k;
         availableCash.c10k -= count10k;
         availableCash.c5k -= count5k;
         availableCash.c1k -= count1k;
 
-        // [추가] 출금된 권종 정보를 호출자에게 전달
         outDispensedCash.c50k = count50k;
         outDispensedCash.c10k = count10k;
         outDispensedCash.c5k = count5k;
