@@ -40,11 +40,13 @@ void TransferTransaction::processCashTransfer(long fee, Account* destAccount) {
     if (totalBills > 50) {
         ui.displayErrorMessage("ExceedCashLimit");
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Transfer Failed (Exceed Cash Limit)");
+        pSession->setSessionAborted(true); // 세션 종료
         return;
     }
     if (totalBills == 0) {
         ui.displayMessage("TransactionCancelled");
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Transfer Cancelled");
+        pSession->setSessionAborted(true); // 빈 입력도 에러로 간주하여 종료
         return;
     }
 
@@ -54,6 +56,7 @@ void TransferTransaction::processCashTransfer(long fee, Account* destAccount) {
     CashDenominations feeCash = { 0, 0, 0, 0 };
     if (!collectFee(fee, feeCash)) {
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Transfer Failed (Fee Not Paid)");
+        pSession->setSessionAborted(true); // 세션 종료
         return;
     }
 
@@ -93,6 +96,7 @@ void TransferTransaction::processCashTransfer(long fee, Account* destAccount) {
     else {
         ui.displayErrorMessage("TransactionFailed");
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Transfer Failed (System Error)");
+        pSession->setSessionAborted(true); // 세션 종료
     }
     ui.wait();
 }
@@ -120,6 +124,7 @@ void TransferTransaction::processAccountTransfer(long fee, Account* destAccount)
     if (sourceAccount->getBalance() < totalDeduction) {
         ui.displayErrorMessage("InsufficientBalance");
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Account Transfer Failed (Insufficient Balance)");
+        pSession->setSessionAborted(true); // 세션 종료
         return;
     }
 
@@ -154,6 +159,7 @@ void TransferTransaction::processAccountTransfer(long fee, Account* destAccount)
     else {
         ui.displayErrorMessage("TransactionFailed");
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Account Transfer Failed (System Error)");
+        pSession->setSessionAborted(true); // 세션 종료
     }
     ui.wait();
 }
@@ -166,18 +172,19 @@ void TransferTransaction::run() {
     try {
         while (true) {
             int choice = ui.inputInt("TransferOptionMenu");
-    
+
             if (choice == 0) {
                 ui.displayMessage("TransactionCancelled");
                 pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Transfer Failed (Canceled Transaction By User)");
                 return;
             }
-    
+
             if (choice != 1 && choice != 2) {
                 ui.displayErrorMessage("InvalidSelection");
-                continue;
+                pSession->setSessionAborted(true); // 잘못된 선택 -> 세션 종료
+                return;
             }
-    
+
             string destAccNum;
             while (true) {
                 ui.displayMessage("AccountNumPrompt");
@@ -187,25 +194,26 @@ void TransferTransaction::run() {
                 }
                 break;
             }
-    
+
             if (destAccNum == "0" || destAccNum == "Back") {
                 ui.displayMessage("TransactionCancelled");
                 pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Transfer Failed (Canceled Transaction By User)");
                 return;
             }
-    
+
             if (choice == 2 && destAccNum == myAccount->getAccountNumber()) {
                 ui.displayMessage("TransferToSelfError");
-                continue;
+                pSession->setSessionAborted(true); // 자기 계좌 이체 에러 -> 세션 종료
+                return;
             }
-    
+
             Account* destAccount = findDestinationAccount(destAccNum);
             if (destAccount == nullptr) {
                 ui.displayMessage("InvalidAccount");
-                continue;
+                pSession->setSessionAborted(true); // 존재하지 않는 계좌 -> 세션 종료
+                return;
             }
-    
-    
+
             if (choice == 1) {
                 long fee = calculateFee(TransactionType::CASH_TRANSFER);
                 processCashTransfer(fee, destAccount);
@@ -214,7 +222,7 @@ void TransferTransaction::run() {
                 long fee = calculateFee(TransactionType::TRANSFER, destAccount->getBankName());
                 processAccountTransfer(fee, destAccount);
             }
-    
+
             break;
         }
     }
