@@ -168,27 +168,37 @@ void DepositTransaction::processCheckDeposit(long fee) {
 void DepositTransaction::run() {
     Interface& ui = pSession->getUI();
 
-    int depositType = ui.inputInt("AskDepositType");
-
-    if (depositType == 0) {
-        ui.displayMessage("TransactionCancelled");
-        return;
-    }
-
-    if (depositType != 1 && depositType != 2) {
-        ui.displayErrorMessage("InvalidSelection");
-        return;
-    }
-
-    // [중요] 여기서 ID가 발급됨
     transactionID = nextID++;
 
-    long fee = calculateFee(TransactionType::DEPOSIT);
+    try {
+        int depositType = ui.inputInt("AskDepositType");
 
-    if (depositType == 1) {
-        processCashDeposit(fee);
+        if (depositType == 0) {
+            ui.displayMessage("TransactionCancelled");
+            pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Deposit Failed (Canceled Transaction By User)");
+            return;
+        }
+
+        if (depositType != 1 && depositType != 2) {
+            ui.displayErrorMessage("InvalidSelection");
+            pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Deposit Failed (Invalid Selection)");
+            return;
+        }
+    
+        long fee = calculateFee(TransactionType::DEPOSIT);
+    
+        if (depositType == 1) {
+            processCashDeposit(fee);
+        }
+        else if (depositType == 2) {
+            processCheckDeposit(fee);
+        }
     }
-    else {
-        processCheckDeposit(fee);
+    // -1 입력 등으로 인한 SessionAbortException 발생 시 로그 기록
+    catch (const Interface::SessionAbortException&) {
+        string cancelLog = "Transaction ID" + to_string(transactionID) + ": Deposit Failed (Canceled Transaction By User)";
+        pSession->recordTransaction(cancelLog);
+        ui.displayMessage("TransactionCancelled");
+        throw; // Session::run()에서 세션 종료를 위해 예외를 다시 던짐
     }
 }
