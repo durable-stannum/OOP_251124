@@ -31,9 +31,6 @@ bool WithdrawalTransaction::processSingleWithdrawal() {
             return false;
         }
     
-        // [중요] 거래 시도가 확정되었으므로 ID 발급
-        transactionID = nextID++;
-    
         // 1. 1회 출금 한도 체크
         if (amount > 500000) {
             ui.displayErrorMessage("ExceedWithdrawalLimit");
