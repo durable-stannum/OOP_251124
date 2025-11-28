@@ -194,7 +194,7 @@ bool ATM::writeHistoryToFile(const string& historyContent) const {
         outFile << "Transaction history output successed." << endl;
         outFile << "======================================" << endl;
         outFile << "======================================" << endl;
-        outFile << "Total called session : " << totalSessionCount << endl;
+        outFile << "Total called session : " << totalSessionCount -1 << endl;
         outFile << "Transaction history of ATM :" << endl;
         outFile << "======================================" << endl;
         outFile << historyContent << endl;
