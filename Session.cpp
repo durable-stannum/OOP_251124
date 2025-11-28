@@ -4,7 +4,7 @@
 #include "DepositTransaction.h"
 #include "WithdrawalTransaction.h"
 #include "TransferTransaction.h"
-#include "ATM.h" // ATM::addHistory 호출을 위해 필요
+#include "ATM.h"
 
 using namespace std;
 
@@ -12,9 +12,8 @@ int Session::sessionCount = 0;
 
 // 1. 생성자
 Session::Session(Bank* pBank, Account* pAccount, Interface& ui, ATM* atm, map<string, Bank*>& banks)
-    : pBank(pBank), pAccount(pAccount), ui(ui), pATM(atm), allBanks(banks), withdrawalCount(0), sessionHistoryBuffer("") // 버퍼 초기화
+    : pBank(pBank), pAccount(pAccount), ui(ui), pATM(atm), allBanks(banks), withdrawalCount(0), sessionHistoryBuffer("")
 {
-    // [수정] ui가 아니라 this(Session 포인터)를 넘겨야 함
     deposit = new DepositTransaction(this);
     withdrawal = new WithdrawalTransaction(this);
     transfer = new TransferTransaction(this);
@@ -29,14 +28,13 @@ Session::~Session() {
     delete transfer;
 }
 
-// 3. 거래 기록 (ATM에 바로 보내지 않고 버퍼에 누적)
+// 3. 거래 기록
 void Session::recordTransaction(const string& log) {
     if (!sessionHistoryBuffer.empty()) {
         sessionHistoryBuffer += "\n";
     }
     sessionHistoryBuffer += log;
 
-    // [추가] 계좌 객체에는 기존처럼 내역을 남겨둠 (선택사항)
     if (pAccount != nullptr) {
         pAccount->addHistory(log);
     }
@@ -121,8 +119,7 @@ void Session::run() {
             }
         }
 
-        // [중요] 세션 종료 시점에 ATM에 전체 내역 전송
-        // 거래 내역이 하나라도 있을 때만 기록 (또는 요구사항에 따라 빈 세션도 기록 가능)
+        // [정상 종료 시 저장 로직]
         if (pATM != nullptr && !sessionHistoryBuffer.empty()) {
             pATM->saveSessionHistory(
                 pAccount->getCardNumber(),
@@ -131,11 +128,20 @@ void Session::run() {
             );
         }
 
-        // 세션 요약 출력
         if (sessionCount != 0) cout << sessionSummary;
     }
     catch (const Interface::SessionAbortException&) {
         ui.displayMessage("SessionEnd");
+
+        // [수정] 강제 종료(-1) 시에도 거래 내역이 있다면 저장하도록 추가
+        if (pATM != nullptr && !sessionHistoryBuffer.empty()) {
+            pATM->saveSessionHistory(
+                pAccount->getCardNumber(),
+                pAccount->getAccountNumber(),
+                sessionHistoryBuffer
+            );
+        }
+
         if (sessionCount != 0) cout << sessionSummary;
         return;
     }
