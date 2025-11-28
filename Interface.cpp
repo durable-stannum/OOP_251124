@@ -9,7 +9,7 @@
 #include <limits>
 using namespace std;
 
-Interface::Interface() { addMessages(); } // 생성자
+Interface::Interface() { addMessages(); }
 
 
 
@@ -332,7 +332,7 @@ void Interface::addMainMenu(const vector<ATM*>& allATMs) {
 	int index = 1;
 	for (ATM* atm : allATMs) {
 		message += "#" + to_string(index++) + "\n";
-		message += "Primary Bank (주거래은행) : " + atm->getPrimaryBankName() + "\n"; // getPrimaryBank -> getPrimaryBankName
+		message += "Primary Bank (주거래은행) : " + atm->getPrimaryBankName() + "\n";
 		message += "ATM Serial (ATM 고유번호) : " + atm->getSerialNumber() + "\n";
 		message += "Type (유형)               : " + atm->getType() + "\n";
 		message += "Language (언어)           : " + atm->getLanguageMode() + "\n\n";
@@ -380,19 +380,18 @@ void Interface::displayErrorMessage(string msgKey) {
 	cout << msgMap[msgKey][language];
 }
 
-// [수정] 정수 입력 (스냅샷 대응)
+// 정수 입력
 int Interface::inputInt(string msgKey) {
 	string input;
 	while (true) {
 		if (!msgKey.empty()) displayMessage(msgKey);
 		cin >> input;
 
-		// [추가] -1 입력 시 예외 발생
+		//-1 입력 시 예외 발생
 		if (input == "-1") {
 			throw SessionAbortException();
 		}
 
-		// 스냅샷 체크
 		if (input == "/") {
 			if (globalInitializer != nullptr) globalInitializer->printSnapshot();
 			continue;
@@ -418,14 +417,14 @@ int Interface::inputInt(string msgKey) {
 	}
 }
 
-// [수정] 큰 정수(금액) 입력 (스냅샷 대응)
+// 큰 정수(금액) 입력
 long Interface::inputCheckAmount(string msgKey) {
 	string input;
 	while (true) {
 		if (!msgKey.empty()) displayMessage(msgKey);
 		cin >> input;
 
-		// [추가] -1 입력 시 예외 발생
+		//-1 입력 시 예외 발생
 		if (input == "-1") {
 			throw SessionAbortException();
 		}
@@ -455,21 +454,20 @@ long Interface::inputCheckAmount(string msgKey) {
 	}
 }
 
-// [추가] 문자열 입력 (스냅샷 대응)
+//문자열 입력
 string Interface::inputString(string msgKey) {
 	string input;
 	while (true) {
 		if (!msgKey.empty()) displayMessage(msgKey);
 		cin >> input;
-		// ⭐️ 1. 이전 버퍼 잔여물(selectLanguage 등) 제거
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-		// [추가] -1 입력 시 예외 발생
+		//-1 입력 시 예외 발생
 		if (input == "-1") {
 			throw SessionAbortException();
 		}
 
-		// 3. 스냅샷 체크
+		//스냅샷 체크
 		if (input == "/") {
 			if (globalInitializer != nullptr) {
 				globalInitializer->printSnapshot();
@@ -477,7 +475,7 @@ string Interface::inputString(string msgKey) {
 			return "";
 		}
 
-		// 빈 문자열이 아닌 경우 (유효성 검사는 ATM에서 처리)
+		//빈 문자열이 아닌 경우 (유효성 검사는 ATM에서 처리)
 		if (!input.empty()) {
 			return input;
 		}
