@@ -31,14 +31,14 @@ bool WithdrawalTransaction::processSingleWithdrawal() {
             return false;
         }
 
-        // 1. 1회 출금 한도 체크
+        //1회 출금 한도 체크
         if (amount > 500000) {
             ui.displayErrorMessage("ExceedWithdrawalLimit");
             pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Withdrawal Failed (Exceeded Limit)");
             pSession->setSessionAborted(true); // 예외 발생 시 세션 종료
             return false;
         }
-        // 2. 금액 단위 체크
+        //금액 단위 체크
         if (amount % 1000 != 0) {
             ui.displayErrorMessage("InvalidAmountUnit");
             pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Withdrawal Failed (Invalid Unit)");
@@ -49,7 +49,7 @@ bool WithdrawalTransaction::processSingleWithdrawal() {
         long fee = calculateFee(TransactionType::WITHDRAWAL);
         long long totalDeduction = amount + fee;
 
-        // 3. 계좌 잔액 체크
+        //계좌 잔액 체크
         if (account->getBalance() < totalDeduction) {
             ui.displayErrorMessage("InsufficientBalance");
             pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Withdrawal Failed (Insufficient Balance)");
@@ -59,7 +59,7 @@ bool WithdrawalTransaction::processSingleWithdrawal() {
 
         CashDenominations dispensedCash;
 
-        // 4. ATM 시재(현금) 부족 체크
+        //ATM 시재(현금) 부족 체크
         if (!atm->dispenseCash(amount, dispensedCash)) {
             ui.displayErrorMessage("InsufficientATMCash");
             pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Withdrawal Failed (Insufficient ATM Cash)");
@@ -67,7 +67,7 @@ bool WithdrawalTransaction::processSingleWithdrawal() {
             return false;
         }
 
-        // 5. 최종 출금 처리 (잔액 차감)
+        // 최종 출금 처리 (잔액 차감)
         if (account->deductFunds(totalDeduction)) {
             string summaryLog = "Transaction ID" + to_string(transactionID) + ": " +
                 to_string(amount) + "Won withdrawed from " + account->getAccountNumber();
@@ -97,7 +97,7 @@ bool WithdrawalTransaction::processSingleWithdrawal() {
             return true;
         }
         else {
-            // 이론상 위에서 잔액 체크를 했지만, 알 수 없는 오류로 실패 시
+            //위에서 잔액 체크를 했지만, 알 수 없는 오류로 실패 시
             ui.displayErrorMessage("TransactionFailed");
             pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Withdrawal Failed (System Error)");
             pSession->setSessionAborted(true); // 예외 발생 시 세션 종료
@@ -132,7 +132,7 @@ void WithdrawalTransaction::run() {
             pSession->increaseWithdrawalCount();
         }
         else {
-            // 실패 시 루프를 탈출 (Process 내부에서 Aborted=true가 되었으므로 Session 루프도 종료됨)
+            // 실패 시 루프를 탈출
             break;
         }
 
