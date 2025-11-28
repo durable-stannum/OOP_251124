@@ -13,7 +13,7 @@ class Initializer; // 전방 선언
 
 class ATM {
 private:
-    int totalSessionCount = 0; // 세션 ID로도 사용
+    int totalSessionCount = 0;
     Bank* pPrimaryBank;
     string serialNumber;
     string type;
@@ -43,7 +43,7 @@ public:
     bool isSingle() const;
     bool isValid(const string& cardNumberInput, Bank* cardBank) const;
 
-    // [수정] Session 클래스에서 종료 시 호출하는 함수
+    //Session 클래스 종료 시 호출
     void saveSessionHistory(const string& cardNum, const string& accNum, const string& sessionLogs);
 
     // 입출금
