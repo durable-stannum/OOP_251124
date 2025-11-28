@@ -15,7 +15,7 @@ private:
 	map<string, map<string, string>> msgMap;
 
 public:
-	// [추가] 세션 강제 종료를 위한 예외 클래스 정의
+	//세션 강제 종료를 위한 예외 클래스
 	class SessionAbortException {};
 
 	Interface();
