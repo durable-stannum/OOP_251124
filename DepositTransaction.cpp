@@ -9,7 +9,7 @@ using namespace std;
 
 DepositTransaction::DepositTransaction(Session* session) : Transaction(session) {}
 
-// [기능 1]현금 입금
+// [기능 1] 현금 입금
 void DepositTransaction::processCashDeposit(long fee) {
     Interface& ui = pSession->getUI();
     Account* account = pSession->getAccount();
@@ -25,11 +25,13 @@ void DepositTransaction::processCashDeposit(long fee) {
     if (totalBills > 50) {
         ui.displayErrorMessage("ExceedCashLimit");
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Deposit Failed (Exceed Cash Limit)");
+        pSession->setSessionAborted(true); // 세션 종료
         return;
     }
     if (totalBills == 0) {
         ui.displayErrorMessage("NoCashInserted");
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Deposit Failed (No Cash Inserted)");
+        pSession->setSessionAborted(true); // 세션 종료
         return;
     }
 
@@ -39,6 +41,7 @@ void DepositTransaction::processCashDeposit(long fee) {
     CashDenominations feeCash = { 0, 0, 0, 0 };
     if (!collectFee(fee, feeCash)) {
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Deposit Failed (Fee Not Paid)");
+        pSession->setSessionAborted(true); // 세션 종료
         return;
     }
 
@@ -73,12 +76,13 @@ void DepositTransaction::processCashDeposit(long fee) {
     else {
         ui.displayErrorMessage("DepositFailed");
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Cash Deposit Failed (System Error)");
+        pSession->setSessionAborted(true); // 세션 종료
     }
     ui.wait();
 }
 
 
-// [기능 2]수표 입금
+// [기능 2] 수표 입금
 void DepositTransaction::processCheckDeposit(long fee) {
     Interface& ui = pSession->getUI();
     Account* account = pSession->getAccount();
@@ -95,13 +99,15 @@ void DepositTransaction::processCheckDeposit(long fee) {
 
         if (amount < 100000) {
             ui.displayErrorMessage("InvalidCheckAmount");
-            continue;
+            pSession->setSessionAborted(true); // 유효하지 않은 입력 범위 -> 세션 종료
+            return;
         }
 
         int count = ui.inputInt("PromptCheckCount");
         if (count <= 0) {
             ui.displayErrorMessage("InvalidInput_Negative");
-            continue;
+            pSession->setSessionAborted(true); // 유효하지 않은 입력 범위 -> 세션 종료
+            return;
         }
 
         totalCheckAmount += (amount * count);
@@ -112,6 +118,7 @@ void DepositTransaction::processCheckDeposit(long fee) {
         if (totalCheckCount > 30) {
             ui.displayErrorMessage("ExceedCheckLimit");
             pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Check Deposit Failed (Exceed Check Limit)");
+            pSession->setSessionAborted(true); // 세션 종료
             return;
         }
     }
@@ -119,6 +126,8 @@ void DepositTransaction::processCheckDeposit(long fee) {
     if (totalCheckCount == 0) {
         ui.displayErrorMessage("NoCheckInputExit");
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Check Deposit Cancelled");
+        // 수표 미입력은 단순 취소로 볼 수도 있으나, 에러 상황으로 간주하고 종료
+        pSession->setSessionAborted(true);
         return;
     }
 
@@ -139,6 +148,7 @@ void DepositTransaction::processCheckDeposit(long fee) {
     CashDenominations feeCash = { 0, 0, 0, 0 };
     if (!collectFee(fee, feeCash)) {
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Check Deposit Failed (Fee Not Paid)");
+        pSession->setSessionAborted(true); // 세션 종료
         return;
     }
 
@@ -160,6 +170,7 @@ void DepositTransaction::processCheckDeposit(long fee) {
     else {
         ui.displayErrorMessage("DepositFailed");
         pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Check Deposit Failed (System Error)");
+        pSession->setSessionAborted(true); // 세션 종료
     }
     ui.wait();
 }
@@ -182,11 +193,12 @@ void DepositTransaction::run() {
         if (depositType != 1 && depositType != 2) {
             ui.displayErrorMessage("InvalidSelection");
             pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Deposit Failed (Invalid Selection)");
+            pSession->setSessionAborted(true); // 잘못된 선택 -> 세션 종료
             return;
         }
-    
+
         long fee = calculateFee(TransactionType::DEPOSIT);
-    
+
         if (depositType == 1) {
             processCashDeposit(fee);
         }
