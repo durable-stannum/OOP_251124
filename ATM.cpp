@@ -57,7 +57,7 @@ void ATM::run() {
         }
 
         //Admin 세션이 끝난 후 이력을 저장 (현재 조회 시에는 안 뜨고, 다음 조회부터 뜸)
-        // AccNum 자리에는 "Administrator", 로그에는 "Admin access" 기록
+        //AccNum 자리에는 "Administrator", 로그에는 "Admin access" 기록
         saveSessionHistory(cardNumberInput, "Administrator", "Admin access");
 
         language = "Unselected";
