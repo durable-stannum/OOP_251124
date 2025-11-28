@@ -8,7 +8,7 @@
 #include "Bank.h"
 #include "Account.h"
 
-// 전방 선언 (Circular Dependency 방지)
+// 전방 선언
 class ATM;
 class Transaction;
 
@@ -19,12 +19,11 @@ private:
     Interface& ui;
     ATM* pATM;
 
-    // [수정] Bank* 맵 참조 저장 (TransferTransaction에서 사용)
+    //Bank* 맵 참조 저장 (TransferTransaction에서 사용)
     map<string, Bank*>& allBanks;
 
     int withdrawalCount;
-    // vector<string> historyLog; // 기존 벡터 방식 대신 string 버퍼 사용
-    string sessionHistoryBuffer;  // [추가] 현재 세션의 거래 내역을 모아두는 버퍼
+    string sessionHistoryBuffer;  //현재 세션의 거래 내역을 모아두는 버퍼
 
     Transaction* deposit;
     Transaction* withdrawal;
@@ -35,15 +34,13 @@ private:
     bool sessionAborted = false;
 
 public:
-    // 생성자
     Session(Bank* pBank, Account* pAccount, Interface& ui, ATM* atm, map<string, Bank*>& banks);
 
-    // [수정] 소멸자 (구현 필수)
     ~Session();
 
     void run();
 
-    // [추가] Transaction 객체들이 사용할 Getter
+    //Transaction 객체들이 사용할 Get
     Interface& getUI() { return ui; }
     Bank* getBank() { return pBank; }
     Account* getAccount() { return pAccount; }
@@ -56,10 +53,10 @@ public:
     void setSessionAborted(bool status) { sessionAborted = status; }
     bool isSessionAborted() const { return sessionAborted; }
 
-    // [수정] 거래 내역 기록 (버퍼에 저장)
+    //거래 내역 기록 (버퍼에 저장)
     void recordTransaction(const string& log);
 
-    // 세션 요약 기록
+    //세션 요약 기록
     void recordSessionSummary(string accountNumberInput, string cardNumberInput, string transactionTypeInput, int amountInput);
 };
 
