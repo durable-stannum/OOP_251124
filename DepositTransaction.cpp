@@ -9,7 +9,7 @@ using namespace std;
 
 DepositTransaction::DepositTransaction(Session* session) : Transaction(session) {}
 
-// [기능 1] 현금 입금
+// [기능 1]현금 입금
 void DepositTransaction::processCashDeposit(long fee) {
     Interface& ui = pSession->getUI();
     Account* account = pSession->getAccount();
@@ -78,7 +78,7 @@ void DepositTransaction::processCashDeposit(long fee) {
 }
 
 
-// [기능 2] 수표 입금
+// [기능 2]수표 입금
 void DepositTransaction::processCheckDeposit(long fee) {
     Interface& ui = pSession->getUI();
     Account* account = pSession->getAccount();
