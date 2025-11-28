@@ -114,7 +114,7 @@ void Session::run() {
                 break;
             default:
                 ui.displayErrorMessage("InvalidSelection");
-                // [REQ9.1] 잘못된 입력 시 세션 종료
+                //잘못된 입력 시 세션 종료
                 setSessionAborted(true);
                 break;
             }
