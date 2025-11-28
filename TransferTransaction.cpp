@@ -162,57 +162,65 @@ void TransferTransaction::run() {
     Interface& ui = pSession->getUI();
     Account* myAccount = pSession->getAccount();
 
-    while (true) {
-        int choice = ui.inputInt("TransferOptionMenu");
-
-        if (choice == 0) {
-            ui.displayMessage("TransactionCancelled");
-            return;
-        }
-
-        if (choice != 1 && choice != 2) {
-            ui.displayErrorMessage("InvalidSelection");
-            continue;
-        }
-
-        string destAccNum;
+    transactionID = nextID++;
+    try {
         while (true) {
-            ui.displayMessage("AccountNumPrompt");
-            destAccNum = ui.inputString("");
-            if (destAccNum.empty()) {
+            int choice = ui.inputInt("TransferOptionMenu");
+    
+            if (choice == 0) {
+                ui.displayMessage("TransactionCancelled");
+                pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Transfer Failed (Canceled Transaction By User)");
+                return;
+            }
+    
+            if (choice != 1 && choice != 2) {
+                ui.displayErrorMessage("InvalidSelection");
                 continue;
             }
+    
+            string destAccNum;
+            while (true) {
+                ui.displayMessage("AccountNumPrompt");
+                destAccNum = ui.inputString("");
+                if (destAccNum.empty()) {
+                    continue;
+                }
+                break;
+            }
+    
+            if (destAccNum == "0" || destAccNum == "Back") {
+                ui.displayMessage("TransactionCancelled");
+                pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Transfer Failed (Canceled Transaction By User)");
+                return;
+            }
+    
+            if (choice == 2 && destAccNum == myAccount->getAccountNumber()) {
+                ui.displayMessage("TransferToSelfError");
+                continue;
+            }
+    
+            Account* destAccount = findDestinationAccount(destAccNum);
+            if (destAccount == nullptr) {
+                ui.displayMessage("InvalidAccount");
+                continue;
+            }
+    
+    
+            if (choice == 1) {
+                long fee = calculateFee(TransactionType::CASH_TRANSFER);
+                processCashTransfer(fee, destAccount);
+            }
+            else {
+                long fee = calculateFee(TransactionType::TRANSFER, destAccount->getBankName());
+                processAccountTransfer(fee, destAccount);
+            }
+    
             break;
         }
-
-        if (destAccNum == "0" || destAccNum == "Back") {
-            ui.displayMessage("TransactionCancelled");
-            return;
-        }
-
-        if (choice == 2 && destAccNum == myAccount->getAccountNumber()) {
-            ui.displayMessage("TransferToSelfError");
-            continue;
-        }
-
-        Account* destAccount = findDestinationAccount(destAccNum);
-        if (destAccount == nullptr) {
-            ui.displayMessage("InvalidAccount");
-            continue;
-        }
-
-        // [중요] 여기서 ID가 발급됨. 이후 실패 시 반드시 로그를 남겨야 함.
-        transactionID = nextID++;
-
-        if (choice == 1) {
-            long fee = calculateFee(TransactionType::CASH_TRANSFER);
-            processCashTransfer(fee, destAccount);
-        }
-        else {
-            long fee = calculateFee(TransactionType::TRANSFER, destAccount->getBankName());
-            processAccountTransfer(fee, destAccount);
-        }
-
-        break;
+    }
+    catch (const Interface::SessionAbortException&) {
+        pSession->recordTransaction("Transaction ID" + to_string(transactionID) + ": Transfer Failed (Canceled Transaction By User)");
+        ui.displayMessage("TransactionCancelled");
+        throw; // Session::run()에서 세션 종료를 위해 예외를 다시 던짐
     }
 }
